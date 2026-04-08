@@ -7,12 +7,44 @@ import { Logo } from '@/components/shared'
 
 const SPRING = { type: 'spring' as const, stiffness: 200, damping: 22 }
 
+const VALID_CODES = ['FOUNDING', 'DOSIS1', 'INVITE']
+const FOUNDING_CODES = ['FOUNDING']
+
+type Step = 'invite' | 'phone' | 'otp'
+
 export default function AccessPage() {
-  const [step, setStep] = useState<'phone' | 'otp'>('phone')
+  const [step, setStep] = useState<Step>('invite')
+  const [inviteCode, setInviteCode] = useState('')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [isFounding, setIsFounding] = useState(false)
+  const [invitedBy, setInvitedBy] = useState('')
   const router = useRouter()
+
+  const handleInviteCode = async (e: FormEvent) => {
+    e.preventDefault()
+    setError('')
+    const code = inviteCode.toUpperCase().trim()
+    if (code.length < 4) {
+      setError('Código demasiado corto')
+      return
+    }
+    setLoading(true)
+    await new Promise((r) => setTimeout(r, 600))
+
+    // Mock validation: accept any 6+ char code, or special codes
+    if (code.length >= 6 || VALID_CODES.includes(code)) {
+      if (FOUNDING_CODES.includes(code)) setIsFounding(true)
+      setInvitedBy(code.length >= 6 ? 'Carlos' : 'Founding Team')
+      setLoading(false)
+      setStep('phone')
+    } else {
+      setError('Código no válido. Necesitas que alguien te invite.')
+      setLoading(false)
+    }
+  }
 
   const handleSendOtp = async (e: FormEvent) => {
     e.preventDefault()
@@ -38,28 +70,138 @@ export default function AccessPage() {
 
       {/* Logo */}
       <motion.div
-        className="mb-10 text-center"
+        className="mb-8 text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={SPRING}
       >
         <Logo size="lg" />
-        <p className="text-sm text-neutral-500 mt-2">Gánate tus vicios</p>
+        <p className="text-sm text-neutral-500 mt-2">Solo por invitación</p>
+      </motion.div>
+
+      {/* Step indicator */}
+      <motion.div
+        className="flex items-center gap-2 mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        {['invite', 'phone', 'otp'].map((s, i) => (
+          <div key={s} className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                step === s
+                  ? 'bg-gold w-6'
+                  : i < ['invite', 'phone', 'otp'].indexOf(step)
+                  ? 'bg-gold'
+                  : 'bg-neutral-700'
+              } rounded-full`}
+            />
+          </div>
+        ))}
       </motion.div>
 
       {/* Form */}
-      <div className="w-full max-w-sm relative">
+      <div className="w-full max-w-sm relative min-h-[280px]">
         <AnimatePresence mode="wait">
-          {step === 'phone' ? (
+          {/* Step 1: Invite Code */}
+          {step === 'invite' && (
+            <motion.form
+              key="invite"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={SPRING}
+              onSubmit={handleInviteCode}
+              className="space-y-4"
+            >
+              <div className="text-center mb-2">
+                <div className="w-14 h-14 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-2xl mx-auto mb-3">
+                  🔒
+                </div>
+                <p className="text-base font-semibold text-white">¿Tienes código de invitación?</p>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Alguien de dentro tiene que invitarte
+                </p>
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  value={inviteCode}
+                  onChange={(e) => {
+                    setInviteCode(e.target.value.toUpperCase())
+                    setError('')
+                  }}
+                  autoFocus
+                  placeholder="CÓDIGO DE INVITACIÓN"
+                  className="w-full text-center text-lg tracking-widest font-mono px-4 py-4 bg-card border border-border rounded-xl text-white placeholder-neutral-700 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition uppercase"
+                  maxLength={12}
+                />
+                {error && (
+                  <motion.p
+                    className="text-xs text-red-400 text-center mt-2"
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    {error}
+                  </motion.p>
+                )}
+              </div>
+
+              <motion.button
+                type="submit"
+                disabled={loading || inviteCode.length < 4}
+                className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
+                whileTap={{ scale: 0.97 }}
+              >
+                {loading ? <Spinner /> : 'Verificar código'}
+              </motion.button>
+
+              <a href="/" className="block text-center text-xs text-neutral-600 hover:text-neutral-400 transition mt-2">
+                ← Volver a la página principal
+              </a>
+            </motion.form>
+          )}
+
+          {/* Step 2: Phone */}
+          {step === 'phone' && (
             <motion.form
               key="phone"
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -30 }}
               transition={SPRING}
               onSubmit={handleSendOtp}
               className="space-y-4"
             >
+              {/* Welcome message */}
+              <motion.div
+                className="text-center mb-2"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ ...SPRING, delay: 0.1 }}
+              >
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl mx-auto mb-3">
+                  ✓
+                </div>
+                <p className="text-base font-semibold text-emerald-400">¡Código válido!</p>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Invitado por <span className="text-white font-medium">{invitedBy}</span>
+                </p>
+                {isFounding && (
+                  <motion.div
+                    className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mt-2"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.3 }}
+                  >
+                    <span className="text-xs">🏅</span>
+                    <span className="text-[10px] text-gold font-bold">FOUNDING MEMBER</span>
+                  </motion.div>
+                )}
+              </motion.div>
+
               <div>
                 <label className="block text-sm text-neutral-400 mb-2 font-medium">Tu número de teléfono</label>
                 <div className="flex gap-2">
@@ -85,40 +227,13 @@ export default function AccessPage() {
                 className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <motion.span
-                      className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
-                    />
-                    Enviando...
-                  </span>
-                ) : (
-                  'Continuar'
-                )}
+                {loading ? <Spinner /> : 'Continuar'}
               </motion.button>
-
-              <div className="flex items-center gap-3 pt-2">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-xs text-neutral-600">o</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-
-              <button
-                type="button"
-                className="w-full py-3 rounded-xl border border-border text-sm text-neutral-400 hover:text-white hover:border-white/20 transition flex items-center justify-center gap-2"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                Continuar con Google
-              </button>
             </motion.form>
-          ) : (
+          )}
+
+          {/* Step 3: OTP */}
+          {step === 'otp' && (
             <motion.form
               key="otp"
               initial={{ opacity: 0, x: 30 }}
@@ -152,18 +267,7 @@ export default function AccessPage() {
                 className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <motion.span
-                      className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
-                    />
-                    Verificando...
-                  </span>
-                ) : (
-                  'Entrar'
-                )}
+                {loading ? <Spinner /> : 'Entrar en DOSIS'}
               </motion.button>
 
               <div className="flex items-center justify-between text-xs">
@@ -183,12 +287,31 @@ export default function AccessPage() {
         </AnimatePresence>
       </div>
 
-      {/* Bottom legal */}
-      <p className="absolute bottom-6 text-[11px] text-neutral-700 text-center px-8">
-        Al continuar aceptas los{' '}
-        <a href="#" className="underline hover:text-neutral-500">términos</a> y la{' '}
-        <a href="#" className="underline hover:text-neutral-500">política de privacidad</a>.
-      </p>
+      {/* Bottom info */}
+      <motion.p
+        className="absolute bottom-6 text-[11px] text-neutral-700 text-center px-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        ¿No tienes invitación?{' '}
+        <a href="/#waitlist" className="text-gold/60 hover:text-gold transition underline">
+          Déjanos tu email
+        </a>{' '}
+        y reza.
+      </motion.p>
     </main>
+  )
+}
+
+function Spinner() {
+  return (
+    <span className="flex items-center justify-center gap-2">
+      <motion.span
+        className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
+      />
+    </span>
   )
 }

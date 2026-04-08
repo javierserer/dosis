@@ -124,25 +124,116 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {/* Invite friends */}
-      <div className="bg-gradient-to-r from-vice/10 to-gold/10 border border-white/10 rounded-2xl p-5 mb-6">
-        <p className="text-sm font-bold text-white mb-1">Invita a tus amigos</p>
-        <p className="text-xs text-neutral-400 mb-3">
-          Cada amigo que se una te da <span className="text-gold font-semibold">200 monedas</span> gratis.
-        </p>
+      {/* Invitations */}
+      <h2 className="text-xs font-semibold text-neutral-500 uppercase tracking-widest mb-3">Tus invitaciones</h2>
+      <div className="bg-gradient-to-br from-gold/10 via-gold/5 to-transparent border border-gold/20 rounded-2xl p-5 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <p className="text-sm font-bold text-white">Invitaciones disponibles</p>
+            <p className="text-xs text-neutral-500 mt-0.5">Elige bien. No hay más.</p>
+          </div>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold ${
+                  i <= 3 ? 'bg-gold/20 text-gold border border-gold/30' : 'bg-white/5 text-neutral-600 border border-border'
+                }`}
+              >
+                {i <= 3 ? '🎫' : '·'}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-3xl font-extrabold text-gold mb-1">3 <span className="text-base text-neutral-500 font-normal">/ 5</span></p>
+        <p className="text-[10px] text-neutral-500 mb-4">2 usadas · 3 restantes</p>
+
+        {/* Invite link */}
         <div className="flex gap-2">
-          <div className="flex-1 bg-card border border-border rounded-lg px-3 py-2 text-xs text-neutral-400 font-mono truncate">
-            dosis.app/invite/javier
+          <div className="flex-1 bg-card border border-border rounded-lg px-3 py-2.5 text-xs text-neutral-400 font-mono truncate">
+            dosis.app/i/JAV-X8K2
           </div>
           <motion.button
             onClick={copyLink}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition ${
+            className={`px-4 py-2.5 rounded-lg text-xs font-bold transition shrink-0 ${
               copied ? 'bg-emerald-500 text-white' : 'bg-gold text-black'
             }`}
             whileTap={{ scale: 0.95 }}
           >
             {copied ? '✓ Copiado' : 'Copiar'}
           </motion.button>
+        </div>
+      </div>
+
+      {/* Invite tree */}
+      <div className="bg-card border border-border rounded-2xl p-5 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-bold text-white">🌳 Tu árbol</p>
+          <span className="text-xs text-gold font-bold">12 personas</span>
+        </div>
+        <div className="space-y-2">
+          {/* Level 1: Direct invites */}
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-gold/20 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-gold" />
+            </div>
+            <span className="text-xs text-white font-medium">Tú</span>
+          </div>
+          {[
+            { name: 'Carlos', tree: 4, active: true },
+            { name: 'María', tree: 6, active: true },
+          ].map((inv, i) => (
+            <div key={i} className="ml-5">
+              <div className="flex items-center gap-2 border-l border-border pl-3 py-1">
+                <div className="w-4 h-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                </div>
+                <span className="text-xs text-neutral-300">{inv.name}</span>
+                <span className="text-[10px] text-neutral-600">→ {inv.tree} invitados</span>
+              </div>
+              {/* Level 2: Their invites (condensed) */}
+              <div className="ml-5 border-l border-border/50 pl-3 py-1">
+                <span className="text-[10px] text-neutral-600">
+                  {inv.tree} personas en su árbol...
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 pt-3 border-t border-border text-center">
+          <p className="text-[10px] text-neutral-500">
+            Tu árbol está en el <span className="text-gold font-bold">top 15%</span> de todos los usuarios
+          </p>
+        </div>
+      </div>
+
+      {/* Earn more invites */}
+      <div className="bg-card border border-border rounded-2xl p-5 mb-6">
+        <p className="text-sm font-bold text-white mb-3">Gana más invitaciones</p>
+        <div className="space-y-2.5">
+          {[
+            { action: 'Racha de 30 días', reward: '+2', progress: 14, total: 30, emoji: '🔥' },
+            { action: 'Ganar 3 duelos', reward: '+1', progress: 2, total: 3, emoji: '⚔️' },
+            { action: 'Squad en top 10%', reward: '+1', progress: 1, total: 1, emoji: '🏆', done: true },
+          ].map((item, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${item.done ? 'bg-emerald-500/5 border border-emerald-500/10' : 'bg-white/[0.02]'}`}>
+              <span className="text-lg">{item.emoji}</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-white font-medium">{item.action}</p>
+                  <span className={`text-[10px] font-bold ${item.done ? 'text-emerald-400' : 'text-gold'}`}>
+                    {item.done ? '✓ Conseguido' : item.reward}
+                  </span>
+                </div>
+                {!item.done && (
+                  <div className="h-1 bg-white/[0.06] rounded-full mt-1.5 overflow-hidden">
+                    <div className="h-full bg-gold/50 rounded-full" style={{ width: `${(item.progress / item.total) * 100}%` }} />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

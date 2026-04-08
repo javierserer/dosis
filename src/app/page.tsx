@@ -121,7 +121,7 @@ function Navbar() {
             href="#waitlist"
             className="px-4 py-2 text-sm font-semibold rounded-full bg-gold text-black hover:bg-gold-light transition"
           >
-            Quiero entrar
+            ¿Tienes invitación?
           </a>
         </div>
       </div>
@@ -186,7 +186,7 @@ function Hero() {
             <br className="hidden sm:block" />{' '}
             Gástalos en vicios reales.
             <br className="hidden sm:block" />{' '}
-            <span className="text-white font-medium">Reta a tus amigos o calla para siempre.</span>
+            <span className="text-white font-medium">Solo entras si alguien cree que te lo mereces.</span>
           </motion.p>
 
           <motion.div
@@ -196,16 +196,16 @@ function Hero() {
             transition={{ ...SPRING, delay: 0.5 }}
           >
             <a
-              href="#waitlist"
+              href="/access"
               className="px-6 py-3.5 rounded-full bg-gold text-black font-bold text-base hover:bg-gold-light transition hover:scale-105 active:scale-95 text-center"
             >
-              Entrar en lista de espera
+              Tengo una invitación →
             </a>
             <a
               href="#como-funciona"
               className="px-6 py-3.5 rounded-full border border-white/15 text-white font-semibold text-base hover:bg-white/5 transition text-center"
             >
-              Ver cómo funciona
+              Quiero que me inviten
             </a>
           </motion.div>
 
@@ -226,7 +226,7 @@ function Hero() {
               ))}
             </div>
             <p className="text-sm text-neutral-500">
-              <span className="text-white font-semibold">2.847</span> personas esperando
+              <span className="text-white font-semibold">4.847</span> dentro · <span className="text-gold font-medium">Solo por invitación</span>
             </p>
           </motion.div>
         </div>
@@ -906,6 +906,82 @@ function ShameBelt() {
 }
 
 /* ================================================================
+   INVITE SYSTEM
+   ================================================================ */
+
+function InviteSystem() {
+  const tiers = [
+    { count: '500', label: 'Founding Members', invites: 10, badge: '🏅', desc: 'Badge permanente dorado + 10 invitaciones', color: 'from-gold/20 to-gold/5', border: 'border-gold/30' },
+    { count: '2.500', label: 'Nivel 2', invites: 5, badge: '🎫', desc: '5 invitaciones + gana más siendo disciplinado', color: 'from-white/5 to-transparent', border: 'border-border' },
+    { count: '12.500', label: 'Nivel 3', invites: 5, badge: '🌱', desc: 'Y así sucesivamente. Sin límite.', color: 'from-white/5 to-transparent', border: 'border-border' },
+  ]
+
+  return (
+    <section className="py-24 sm:py-32 relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-vice/[0.02] to-transparent pointer-events-none" />
+      <div className="max-w-6xl mx-auto px-5 relative">
+        <FadeIn className="text-center mb-16">
+          <p className="text-sm text-vice font-semibold uppercase tracking-widest mb-3">El sistema</p>
+          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
+            Cada invitación es un privilegio.
+            <br />
+            <span className="text-neutral-500">No un enlace genérico.</span>
+          </h2>
+        </FadeIn>
+
+        {/* Growth visualization */}
+        <div className="max-w-2xl mx-auto mb-12">
+          <div className="flex items-center justify-between relative">
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
+            {tiers.map((tier, i) => (
+              <FadeIn key={i} delay={0.1 + i * 0.15} className="relative">
+                <div className={`bg-gradient-to-b ${tier.color} border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44`}>
+                  <span className="text-2xl mb-1 block">{tier.badge}</span>
+                  <p className="text-xl font-extrabold text-white">{tier.count}</p>
+                  <p className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider">{tier.label}</p>
+                  <p className="text-[10px] text-neutral-500 mt-1.5 leading-relaxed">{tier.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+
+        {/* Earn more invites */}
+        <FadeIn delay={0.4}>
+          <div className="bg-card border border-border rounded-2xl p-6 max-w-2xl mx-auto">
+            <h3 className="text-base font-bold text-white mb-4 text-center">Gana más invitaciones</h3>
+            <div className="grid sm:grid-cols-3 gap-4">
+              {[
+                { action: 'Racha de 30 días', reward: '+2 invitaciones', emoji: '🔥' },
+                { action: 'Ganar 3 duelos', reward: '+1 invitación', emoji: '⚔️' },
+                { action: 'Squad en top 10%', reward: '+1 para todos', emoji: '🏆' },
+              ].map((item, i) => (
+                <div key={i} className="text-center bg-white/[0.02] rounded-xl p-3">
+                  <span className="text-2xl">{item.emoji}</span>
+                  <p className="text-xs text-white font-medium mt-1.5">{item.action}</p>
+                  <p className="text-[10px] text-gold font-bold mt-0.5">{item.reward}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Invite tree teaser */}
+        <FadeIn delay={0.55} className="mt-8 text-center">
+          <div className="inline-flex items-center gap-3 bg-card rounded-full border border-border px-5 py-3">
+            <span className="text-sm">🌳</span>
+            <span className="text-sm text-neutral-400">
+              Tu <span className="text-white font-semibold">árbol de invitaciones</span> crece con cada persona que metes.
+              El founding member con el árbol más grande gana.
+            </span>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ================================================================
    WHY IT WORKS
    ================================================================ */
 
@@ -927,9 +1003,9 @@ function WhyItWorks() {
       icon: '🏆',
     },
     {
-      title: 'Compartir crea FOMO',
-      desc: 'Cuando tus amigos ven tu recap y no tienen la app, la quieren. Así crece esto.',
-      icon: '📱',
+      title: '5 invitaciones. Ni una más.',
+      desc: 'No puedes entrar si nadie te invita. Y cada persona solo tiene 5. Eso convierte cada invitación en oro.',
+      icon: '🔒',
     },
   ]
 
@@ -973,10 +1049,10 @@ function Numbers() {
       <div className="max-w-4xl mx-auto px-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
-            { value: 2847, label: 'En lista de espera', suffix: '' },
-            { value: 87, label: 'Completación de hábitos', suffix: '%' },
-            { value: 14, label: 'Días de racha media', suffix: '' },
-            { value: 3, label: 'Amigos invitados de media', suffix: '.2' },
+            { value: 4847, label: 'Personas dentro', suffix: '' },
+            { value: 5, label: 'Invitaciones por persona', suffix: '' },
+            { value: 87, label: 'Usan 3+ de sus 5 invites', suffix: '%' },
+            { value: 3, label: 'Niveles de profundidad media', suffix: '.4' },
           ].map((stat, i) => (
             <FadeIn key={i} delay={i * 0.1}>
               <p className="text-3xl sm:text-4xl font-extrabold text-white">
@@ -992,10 +1068,10 @@ function Numbers() {
 }
 
 /* ================================================================
-   WAITLIST CTA
+   INVITE CTA
    ================================================================ */
 
-function WaitlistCTA() {
+function InviteCTA() {
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
@@ -1004,65 +1080,82 @@ function WaitlistCTA() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/[0.03] to-transparent pointer-events-none" />
       <div className="max-w-3xl mx-auto px-5 text-center relative">
         <FadeIn>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold/20 bg-gold/[0.05] text-xs text-gold font-semibold mb-6">
+            🔒 Solo por invitación
+          </div>
           <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
-            ¿Te lo vas a ganar
-            <br />
+            NO PUEDES ENTRAR.
+          </h2>
+          <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] mt-2">
+            <span className="text-neutral-500">A no ser que alguien crea</span>
+          </h2>
+          <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] mt-2">
             <span className="bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
-              o te lo vas a regalar?
+              que te lo mereces.
             </span>
           </h2>
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <p className="mt-6 text-lg text-neutral-400 max-w-md mx-auto">
-            Únete a la lista de espera.
+          <p className="mt-8 text-lg text-neutral-400 max-w-lg mx-auto leading-relaxed">
+            Cada persona dentro tiene <span className="text-white font-semibold">5 invitaciones</span>. Solo 5.
             <br />
-            <span className="text-white font-semibold">Los primeros 1.000 entran gratis. Para siempre.</span>
+            Elige bien a quién metes. No hay segunda oportunidad.
           </p>
         </FadeIn>
 
         <FadeIn delay={0.3}>
-          {!submitted ? (
-            <form
-              className="mt-10 flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-              onSubmit={(e) => {
-                e.preventDefault()
-                if (email) setSubmitted(true)
-              }}
+          <div className="mt-10 flex flex-col gap-4 max-w-md mx-auto">
+            <a
+              href="/access"
+              className="w-full py-4 rounded-xl bg-gold text-black font-bold text-base hover:bg-gold-light transition hover:scale-[1.02] active:scale-[0.98] text-center"
             >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                className="flex-1 px-5 py-3.5 rounded-full bg-card border border-border text-white placeholder-neutral-600 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition"
-                required
-              />
-              <button
-                type="submit"
-                className="px-7 py-3.5 rounded-full bg-gold text-black font-bold hover:bg-gold-light transition hover:scale-105 active:scale-95 shrink-0"
-              >
-                Quiero entrar →
-              </button>
-            </form>
-          ) : (
-            <motion.div
-              className="mt-10 bg-card border border-gold/20 rounded-2xl p-6 max-w-md mx-auto"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={SPRING_SNAPPY}
-            >
-              <p className="text-2xl mb-2">🎉</p>
-              <p className="text-lg font-bold text-white">Estás dentro</p>
-              <p className="text-sm text-neutral-400 mt-1">
-                Te avisaremos antes que a nadie. Mientras, comparte esto con quien necesite disciplina.
+              Tengo una invitación →
+            </a>
+
+            <div className="bg-card/50 border border-border rounded-xl p-5">
+              <p className="text-sm text-neutral-400 mb-3">
+                ¿No tienes? Deja tu email.
+                <span className="text-neutral-600"> Si alguien te invita, te avisamos.</span>
               </p>
-            </motion.div>
-          )}
+              {!submitted ? (
+                <form
+                  className="flex gap-2"
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    if (email) setSubmitted(true)
+                  }}
+                >
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tu@email.com"
+                    className="flex-1 px-4 py-2.5 rounded-lg bg-background border border-border text-white text-sm placeholder-neutral-600 focus:outline-none focus:border-gold/50 transition"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2.5 rounded-lg border border-gold/30 text-gold text-sm font-semibold hover:bg-gold/5 transition shrink-0"
+                  >
+                    Avisar
+                  </button>
+                </form>
+              ) : (
+                <motion.p
+                  className="text-sm text-emerald-400 font-medium py-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  ✓ Si alguien te invita, serás el primero en saberlo
+                </motion.p>
+              )}
+            </div>
+          </div>
         </FadeIn>
 
         <FadeIn delay={0.45}>
-          <div className="mt-6 flex items-center justify-center gap-3">
+          <div className="mt-8 flex items-center justify-center gap-3">
             <div className="flex -space-x-2">
               {['🧔', '👩', '🧑‍🦱', '👨‍🦰'].map((emoji, i) => (
                 <div
@@ -1074,8 +1167,8 @@ function WaitlistCTA() {
               ))}
             </div>
             <p className="text-sm text-neutral-500">
-              <span className="text-white font-medium">2.847</span> ya dentro · quedan{' '}
-              <span className="text-gold font-medium">153 plazas gratis</span>
+              <span className="text-white font-medium">4.847</span> dentro ·{' '}
+              <span className="text-gold font-medium">Solo por invitación</span>
             </p>
           </div>
         </FadeIn>
@@ -1097,7 +1190,7 @@ function Footer() {
             <span className="text-sm font-extrabold tracking-tighter">
               <span className="text-gold">D</span>OSIS
             </span>
-            <span className="text-xs text-neutral-600">Gánate tus vicios.</span>
+            <span className="text-xs text-neutral-600">Solo por invitación.</span>
           </div>
           <div className="flex items-center gap-4">
             {[
@@ -1138,9 +1231,10 @@ export default function Home() {
       <ShameBelt />
       <Squads />
       <WeeklyRecap />
+      <InviteSystem />
       <WhyItWorks />
       <Numbers />
-      <WaitlistCTA />
+      <InviteCTA />
       <Footer />
     </main>
   )
