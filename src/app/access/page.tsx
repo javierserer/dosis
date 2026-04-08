@@ -116,8 +116,8 @@ export default function AccessPage() {
               className="space-y-4"
             >
               <div className="text-center mb-2">
-                <div className="w-14 h-14 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-2xl mx-auto mb-3">
-                  🔒
+                <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center text-sm font-bold text-gold mx-auto mb-3">
+                  INV
                 </div>
                 <p className="text-base font-semibold text-white">¿Tienes código de invitación?</p>
                 <p className="text-xs text-neutral-500 mt-1">
@@ -196,7 +196,7 @@ export default function AccessPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.3 }}
                   >
-                    <span className="text-xs">🏅</span>
+                    <span className="text-xs text-gold font-bold">F</span>
                     <span className="text-[10px] text-gold font-bold">FOUNDING MEMBER</span>
                   </motion.div>
                 )}
@@ -244,8 +244,8 @@ export default function AccessPage() {
               className="space-y-4"
             >
               <div className="text-center mb-2">
-                <div className="w-14 h-14 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center text-2xl mx-auto mb-3">
-                  📱
+                <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center text-sm font-bold text-gold mx-auto mb-3">
+                  OTP
                 </div>
                 <p className="text-sm text-neutral-400">Código enviado a</p>
                 <p className="text-sm text-white font-semibold">+34 {phone}</p>

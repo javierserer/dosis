@@ -148,7 +148,6 @@ function Hero() {
     <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-16">
       {/* Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-gold/[0.07] via-transparent to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-vice/[0.05] blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-5 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
         {/* Text */}
@@ -216,12 +215,12 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
           >
             <div className="flex -space-x-2">
-              {['🧔', '👩', '🧑‍🦱', '👨‍🦰', '👩‍🦳'].map((emoji, i) => (
+              {['JA', 'CA', 'MA', 'DA', 'LU'].map((initials, i) => (
                 <div
                   key={i}
-                  className="w-8 h-8 rounded-full bg-card border-2 border-background flex items-center justify-center text-sm"
+                  className="w-7 h-7 rounded-full bg-card border-2 border-background flex items-center justify-center text-[9px] font-bold text-neutral-500"
                 >
-                  {emoji}
+                  {initials}
                 </div>
               ))}
             </div>
@@ -245,24 +244,22 @@ function Hero() {
                 <span className="text-sm font-extrabold tracking-tighter text-white">
                   <span className="text-gold">D</span>OSIS
                 </span>
-                <div className="flex items-center gap-1.5 text-xs text-orange-400 font-bold">
-                  🔥 <span>14 días</span>
-                </div>
+                <span className="text-xs text-gold font-bold">14d</span>
               </div>
 
               {/* Balance card */}
               <motion.div
-                className="bg-gradient-to-br from-amber-500/20 via-yellow-600/10 to-transparent rounded-2xl p-4 border border-amber-500/20 mb-4"
+                className="bg-white/[0.03] rounded-2xl p-4 border border-border mb-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ ...SPRING_SNAPPY, delay: 0.7 }}
               >
-                <p className="text-[10px] text-amber-300/70 font-medium uppercase tracking-wider">Tu saldo</p>
+                <p className="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">Tu saldo</p>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-3xl font-extrabold text-white">850</span>
                   <Coin size={18} />
                 </div>
-                <p className="text-[10px] text-emerald-400 mt-1">+145 hoy</p>
+                <p className="text-[10px] text-gold mt-1">+145 hoy</p>
               </motion.div>
 
               {/* Habits */}
@@ -303,7 +300,7 @@ function Hero() {
                 </div>
                 <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-gradient-to-r from-gold to-amber-500 rounded-full"
+                    className="h-full bg-gold rounded-full"
                     initial={{ width: 0 }}
                     animate={inView ? { width: '75%' } : {}}
                     transition={{ duration: 0.8, delay: 1.3, ease: 'easeOut' }}
@@ -324,7 +321,7 @@ function Hero() {
               animate={inView ? { y: [0, -3, 0] } : {}}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
             >
-              <p className="text-[10px] text-emerald-400 font-semibold mb-1">🍺 Desbloqueado</p>
+              <p className="text-[10px] text-gold font-semibold mb-1">Desbloqueado</p>
               <p className="text-xs text-neutral-300">Te has ganado una cerveza</p>
               <p className="text-[10px] text-neutral-600 mt-1">Hace 2 min</p>
             </motion.div>
@@ -341,7 +338,7 @@ function Hero() {
               animate={inView ? { y: [0, -3, 0] } : {}}
               transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
             >
-              <p className="text-[10px] text-orange-400 font-semibold">🔥 Racha x2</p>
+              <p className="text-[10px] text-gold font-semibold">Racha x2</p>
               <p className="text-xs text-neutral-300 mt-0.5">14 días · Doble puntos</p>
             </motion.div>
           </motion.div>
@@ -357,30 +354,9 @@ function Hero() {
 
 function HowItWorks() {
   const steps = [
-    {
-      number: '01',
-      title: 'CURRA',
-      emoji: '🏋️',
-      desc: 'Define tus hábitos. Cada uno vale monedas. Tú decides el precio de tu disciplina.',
-      color: 'from-emerald-500/20 to-emerald-600/5',
-      border: 'border-emerald-500/20',
-    },
-    {
-      number: '02',
-      title: 'GANA',
-      emoji: '🪙',
-      desc: 'Cumple y acumula. Las rachas multiplican. 7 días seguidos = puntos dobles.',
-      color: 'from-amber-500/20 to-amber-600/5',
-      border: 'border-amber-500/20',
-    },
-    {
-      number: '03',
-      title: 'GÁSTALO',
-      emoji: '🍺',
-      desc: '¿Cerveza? ¿Netflix? ¿Cheat meal? Si tienes saldo, el vicio es tuyo. Si no, te jodes.',
-      color: 'from-vice/20 to-vice/5',
-      border: 'border-vice/20',
-    },
+    { number: '01', title: 'CURRA', desc: 'Define tus hábitos. Los que quieras: gym, lectura, madrugar, lo que sea tuyo. Cada uno vale monedas.' },
+    { number: '02', title: 'GANA', desc: 'Cumple y acumula. Las rachas multiplican. 7 días seguidos = puntos dobles.' },
+    { number: '03', title: 'GÁSTALO', desc: '¿Cerveza? ¿Netflix? ¿Cheat meal? Si tienes saldo, el vicio es tuyo. Si no, te jodes.' },
   ]
 
   return (
@@ -397,14 +373,11 @@ function HowItWorks() {
           {steps.map((s, i) => (
             <FadeIn key={i} delay={0.1 + i * 0.15}>
               <motion.div
-                className={`relative bg-gradient-to-b ${s.color} rounded-2xl p-6 border ${s.border} h-full group`}
-                whileHover={{ y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                className="relative bg-card rounded-2xl p-6 border border-border h-full"
+                whileHover={{ y: -4, borderColor: 'rgba(212,168,67,0.2)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
               >
-                <span className="text-5xl mb-4 block">{s.emoji}</span>
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-xs text-neutral-600 font-mono">{s.number}</span>
-                  <h3 className="text-xl font-extrabold tracking-tight">{s.title}</h3>
-                </div>
+                <span className="text-3xl font-extrabold text-gold/30 font-mono mb-3 block">{s.number}</span>
+                <h3 className="text-xl font-extrabold tracking-tight mb-2">{s.title}</h3>
                 <p className="text-sm text-neutral-400 leading-relaxed">{s.desc}</p>
               </motion.div>
             </FadeIn>
@@ -421,21 +394,22 @@ function HowItWorks() {
 
 function ViceEconomy() {
   const earnings = [
-    { name: 'Gym 1h', coins: 80, emoji: '🏋️' },
-    { name: 'Leer 30min', coins: 40, emoji: '📖' },
-    { name: 'Madrugar antes de las 7', coins: 30, emoji: '⏰' },
-    { name: 'Sin alcohol hoy', coins: 25, emoji: '🚫' },
-    { name: 'Meditar 10min', coins: 20, emoji: '🧘' },
-    { name: 'Beber 2L agua', coins: 15, emoji: '💧' },
+    { name: 'Gym 1h', coins: 80 },
+    { name: 'Leer 30min', coins: 40 },
+    { name: 'Madrugar antes de las 7', coins: 30 },
+    { name: 'Sin alcohol hoy', coins: 25 },
+    { name: 'Meditar 10min', coins: 20 },
+    { name: 'Mascarilla pelo', coins: 15 },
+    { name: 'Lo que tú quieras', coins: '??' },
   ]
 
   const expenses = [
-    { name: 'Cheat meal', coins: 150, emoji: '🍕' },
-    { name: 'Cerveza', coins: 100, emoji: '🍺' },
-    { name: 'Netflix binge', coins: 80, emoji: '📺' },
-    { name: 'Saltarte el gym', coins: 60, emoji: '🛋️' },
-    { name: 'Dormir la mona', coins: 40, emoji: '😴' },
-    { name: 'Fast food', coins: 120, emoji: '🍔' },
+    { name: 'Cheat meal', coins: 150 },
+    { name: 'Cerveza', coins: 100 },
+    { name: 'Netflix binge', coins: 80 },
+    { name: 'Saltarte el gym', coins: 60 },
+    { name: 'Fast food', coins: 120 },
+    { name: 'Tu vicio favorito', coins: '??' },
   ]
 
   return (
@@ -455,28 +429,15 @@ function ViceEconomy() {
           {/* Earnings */}
           <FadeIn delay={0.1}>
             <div className="bg-card rounded-2xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-sm">
-                  ↑
-                </div>
-                <h3 className="font-bold text-lg">Ganas</h3>
-              </div>
+              <h3 className="font-bold text-base mb-4 text-neutral-300">Ganas</h3>
               <div className="space-y-3">
                 {earnings.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className="flex items-center justify-between group"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{item.emoji}</span>
-                      <span className="text-sm text-neutral-300">{item.name}</span>
-                    </div>
-                    <span className="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
-                      +{item.coins} <Coin size={12} />
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-400">{item.name}</span>
+                    <span className="text-sm font-bold text-gold tabular-nums">
+                      +{item.coins}
                     </span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -485,28 +446,15 @@ function ViceEconomy() {
           {/* Expenses */}
           <FadeIn delay={0.25}>
             <div className="bg-card rounded-2xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-vice/10 flex items-center justify-center text-vice text-sm">
-                  ↓
-                </div>
-                <h3 className="font-bold text-lg">Gastas</h3>
-              </div>
+              <h3 className="font-bold text-base mb-4 text-neutral-300">Gastas</h3>
               <div className="space-y-3">
                 {expenses.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className="flex items-center justify-between group"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{item.emoji}</span>
-                      <span className="text-sm text-neutral-300">{item.name}</span>
-                    </div>
-                    <span className="text-sm font-bold text-vice flex items-center gap-1.5">
-                      -{item.coins} <Coin size={12} />
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-400">{item.name}</span>
+                    <span className="text-sm font-bold text-neutral-500 tabular-nums">
+                      −{item.coins}
                     </span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -517,9 +465,9 @@ function ViceEconomy() {
           <div className="inline-flex items-center gap-3 bg-card rounded-full border border-border px-5 py-3">
             <span className="text-sm text-neutral-400">La matemática es simple:</span>
             <span className="text-sm font-bold">
-              <span className="text-emerald-400">3 gym</span>
+              <span className="text-gold">3 gym</span>
               {' = '}
-              <span className="text-vice">1 cerveza + 1 cheat meal</span>
+              <span className="text-neutral-300">1 cerveza + 1 cheat meal</span>
             </span>
           </div>
         </FadeIn>
@@ -667,14 +615,14 @@ function Squads() {
 
             <div className="mt-8 space-y-4 max-w-md mx-auto lg:mx-0">
               {[
-                { icon: '🏆', text: 'Ranking semanal entre amigos', detail: 'El primero elige castigo del último' },
-                { icon: '👀', text: 'Vergüenza pública', detail: 'Si no cumples, tu squad lo sabe' },
-                { icon: '⚔️', text: 'Duelos 1v1', detail: 'Reta a cualquiera. El perdedor paga.' },
-                { icon: '🔒', text: 'Sin amigos no hay juego', detail: 'Invita o pierde funciones' },
+                { text: 'Ranking semanal entre amigos', detail: 'El primero elige castigo del último' },
+                { text: 'Vergüenza pública', detail: 'Si no cumples, tu squad lo sabe' },
+                { text: 'Duelos 1v1', detail: 'Reta a cualquiera. El perdedor paga.' },
+                { text: 'Sin amigos no hay juego', detail: 'Invita o pierde funciones' },
               ].map((f, i) => (
                 <FadeIn key={i} delay={0.3 + i * 0.1}>
                   <div className="flex items-start gap-3 text-left">
-                    <span className="text-lg mt-0.5">{f.icon}</span>
+                    <span className="text-gold/40 text-xs font-mono mt-1">—</span>
                     <div>
                       <p className="text-sm font-semibold text-white">{f.text}</p>
                       <p className="text-xs text-neutral-500">{f.detail}</p>
@@ -700,36 +648,35 @@ function WeeklyRecap() {
 
   return (
     <section className="py-24 sm:py-32 relative" ref={ref}>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-vice/[0.02] to-transparent pointer-events-none" />
       <div className="max-w-6xl mx-auto px-5 relative">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           {/* Text */}
           <div className="flex-1 text-center lg:text-left">
             <FadeIn>
-              <p className="text-sm text-vice font-semibold uppercase tracking-widest mb-3">Weekly Recap</p>
+              <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">Tu progreso</p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Tu semana
+                Los números
                 <br />
-                en una story.
+                no mienten.
               </h2>
             </FadeIn>
 
             <FadeIn delay={0.15}>
               <p className="mt-6 text-lg text-neutral-400 leading-relaxed max-w-md mx-auto lg:mx-0">
-                Cada lunes generas tu recap. Tan bonito que querrás presumir.
-                <span className="text-white font-medium"> Tan sincero que no podrás mentir.</span>
+                Cada semana, un resumen de lo que has hecho.
+                <span className="text-white font-medium"> Sin edulcorar. Sin excusas.</span>
               </p>
             </FadeIn>
 
             <FadeIn delay={0.3}>
               <div className="mt-8 space-y-4 max-w-md mx-auto lg:mx-0">
                 {[
-                  { icon: '📱', text: 'Formato Instagram Story', detail: 'Listo para compartir en un tap' },
-                  { icon: '📊', text: 'Tus stats reales', detail: 'No puedes fingir los números' },
-                  { icon: '🔗', text: 'Link + QR incluidos', detail: 'Cada share es un usuario nuevo' },
+                  { text: 'Resumen semanal automático', detail: 'Progreso de cada hábito, tendencias y rachas' },
+                  { text: 'Tu balance real', detail: 'Cuánto has ganado, cuánto has gastado, y qué te has ganado' },
+                  { text: 'Histórico completo', detail: 'Semana a semana, ve cómo evoluciona tu disciplina' },
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 text-left">
-                    <span className="text-lg mt-0.5">{f.icon}</span>
+                    <span className="text-gold/40 text-xs font-mono mt-1">—</span>
                     <div>
                       <p className="text-sm font-semibold text-white">{f.text}</p>
                       <p className="text-xs text-neutral-500">{f.detail}</p>
@@ -765,17 +712,17 @@ function WeeklyRecap() {
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ ...SPRING_SNAPPY, delay: 0.6 }}
                 >
-                  <span className="text-[10px] text-gold font-bold">LVL 23 ⭐</span>
+                  <span className="text-[10px] text-gold font-bold">LVL 23</span>
                 </motion.div>
               </div>
 
               {/* Stats grid */}
               <div className="grid grid-cols-2 gap-2 mb-4">
                 {[
-                  { label: 'Gym', value: '5/5', color: 'text-emerald-400' },
-                  { label: 'Lectura', value: '4/7', color: 'text-blue-400' },
-                  { label: 'Sin alcohol', value: '6/7', color: 'text-amber-400' },
-                  { label: 'Meditación', value: '3/5', color: 'text-vice' },
+                  { label: 'Gym', value: '5/5', color: 'text-gold' },
+                  { label: 'Lectura', value: '4/7', color: 'text-gold' },
+                  { label: 'Sin alcohol', value: '6/7', color: 'text-gold' },
+                  { label: 'Meditación', value: '3/5', color: 'text-neutral-400' },
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
@@ -793,69 +740,31 @@ function WeeklyRecap() {
               {/* Divider */}
               <div className="h-px bg-white/[0.06] my-4" />
 
-              {/* Earned vices */}
+              {/* Balance */}
               <motion.div
-                className="text-center mb-4"
+                className="text-center bg-white/[0.03] rounded-lg p-3 mb-3"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 1.1 }}
               >
-                <p className="text-[10px] text-neutral-500 font-semibold mb-2">ME HE GANADO</p>
-                <div className="flex justify-center gap-2 text-2xl">
-                  {['🍺', '🍺', '🍕', '📺'].map((e, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={inView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ ...SPRING_SNAPPY, delay: 1.2 + i * 0.1 }}
-                    >
-                      {e}
-                    </motion.span>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Balance */}
-              <motion.div
-                className="text-center bg-gradient-to-r from-gold/10 to-transparent rounded-lg p-2.5 mb-4"
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.4 }}
-              >
                 <p className="text-[10px] text-neutral-500">BALANCE SEMANAL</p>
-                <p className="text-lg font-extrabold text-emerald-400 flex items-center justify-center gap-1.5">
+                <p className="text-lg font-extrabold text-gold flex items-center justify-center gap-1.5">
                   +420 <Coin size={14} />
                 </p>
               </motion.div>
 
-              {/* QR placeholder */}
+              {/* Trend */}
               <motion.div
-                className="flex items-center justify-center"
+                className="text-center"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.5 }}
+                transition={{ delay: 1.3 }}
               >
-                <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center">
-                  <div className="grid grid-cols-4 gap-[2px]">
-                    {Array.from({ length: 16 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-2.5 h-2.5 rounded-[1px] ${
-                          [0, 1, 3, 4, 5, 7, 8, 11, 12, 13, 15].includes(i)
-                            ? 'bg-black'
-                            : 'bg-transparent'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <p className="text-[10px] text-neutral-600">vs semana anterior</p>
+                <p className="text-xs font-bold text-gold mt-0.5">+12% mejor</p>
               </motion.div>
-
-              <p className="text-center text-[8px] text-neutral-600 mt-2 font-mono">dosis.app</p>
             </div>
 
-            {/* Glow behind */}
-            <div className="absolute -inset-8 bg-gradient-radial from-vice/[0.08] to-transparent rounded-full blur-2xl -z-10" />
           </motion.div>
         </div>
       </div>
@@ -869,21 +778,21 @@ function WeeklyRecap() {
 
 function ShameBelt() {
   const notifications = [
-    '🏋️ Carlos completó su 5to gym de la semana',
-    '👀 David lleva 3 días sin entrenar...',
-    '🍺 María se ha ganado una cerveza',
-    '⚔️ Nuevo duelo: Laura vs Pablo · Running semanal',
-    '🔥 Ana lleva 30 días de racha · Multiplicador x4',
-    '💀 Grupo "Los Disciplinados": David último otra vez',
-    '📱 12 personas se unieron esta semana desde recaps',
-    '🥇 Tu squad "Gym Bros" es top 5% global',
+    'Carlos completó su 5to gym de la semana',
+    'David lleva 3 días sin entrenar...',
+    'María se ha ganado una cerveza',
+    'Nuevo duelo: Laura vs Pablo · Running semanal',
+    'Ana lleva 30 días de racha · Multiplicador x4',
+    'Los Disciplinados: David último otra vez',
+    '12 personas entraron esta semana por invitación',
+    'Tu squad "Gym Bros" es top 5% global',
   ]
 
   return (
     <section className="py-16 overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10 pointer-events-none" />
       <FadeIn className="text-center mb-8">
-        <p className="text-sm text-neutral-500">Esto está pasando ahora mismo 👇</p>
+        <p className="text-sm text-neutral-500">Esto está pasando ahora mismo</p>
       </FadeIn>
       <div className="relative">
         <motion.div
@@ -911,17 +820,16 @@ function ShameBelt() {
 
 function InviteSystem() {
   const tiers = [
-    { count: '500', label: 'Founding Members', invites: 10, badge: '🏅', desc: 'Badge permanente dorado + 10 invitaciones', color: 'from-gold/20 to-gold/5', border: 'border-gold/30' },
-    { count: '2.500', label: 'Nivel 2', invites: 5, badge: '🎫', desc: '5 invitaciones + gana más siendo disciplinado', color: 'from-white/5 to-transparent', border: 'border-border' },
-    { count: '12.500', label: 'Nivel 3', invites: 5, badge: '🌱', desc: 'Y así sucesivamente. Sin límite.', color: 'from-white/5 to-transparent', border: 'border-border' },
+    { count: '500', label: 'Founding Members', invites: 10, desc: '10 invitaciones + badge permanente', border: 'border-gold/30' },
+    { count: '2.500', label: 'Nivel 2', invites: 5, desc: '5 invitaciones + gana más siendo disciplinado', border: 'border-border' },
+    { count: '12.500', label: 'Nivel 3', invites: 5, desc: 'Y así sucesivamente. Sin límite.', border: 'border-border' },
   ]
 
   return (
     <section className="py-24 sm:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-vice/[0.02] to-transparent pointer-events-none" />
       <div className="max-w-6xl mx-auto px-5 relative">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm text-vice font-semibold uppercase tracking-widest mb-3">El sistema</p>
+          <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">El sistema</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
             Cada invitación es un privilegio.
             <br />
@@ -935,8 +843,7 @@ function InviteSystem() {
             <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
             {tiers.map((tier, i) => (
               <FadeIn key={i} delay={0.1 + i * 0.15} className="relative">
-                <div className={`bg-gradient-to-b ${tier.color} border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44`}>
-                  <span className="text-2xl mb-1 block">{tier.badge}</span>
+                <div className={`bg-card border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44`}>
                   <p className="text-xl font-extrabold text-white">{tier.count}</p>
                   <p className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider">{tier.label}</p>
                   <p className="text-[10px] text-neutral-500 mt-1.5 leading-relaxed">{tier.desc}</p>
@@ -952,13 +859,12 @@ function InviteSystem() {
             <h3 className="text-base font-bold text-white mb-4 text-center">Gana más invitaciones</h3>
             <div className="grid sm:grid-cols-3 gap-4">
               {[
-                { action: 'Racha de 30 días', reward: '+2 invitaciones', emoji: '🔥' },
-                { action: 'Ganar 3 duelos', reward: '+1 invitación', emoji: '⚔️' },
-                { action: 'Squad en top 10%', reward: '+1 para todos', emoji: '🏆' },
+                { action: 'Racha de 30 días', reward: '+2 invitaciones' },
+                { action: 'Ganar 3 duelos', reward: '+1 invitación' },
+                { action: 'Squad en top 10%', reward: '+1 para todos' },
               ].map((item, i) => (
                 <div key={i} className="text-center bg-white/[0.02] rounded-xl p-3">
-                  <span className="text-2xl">{item.emoji}</span>
-                  <p className="text-xs text-white font-medium mt-1.5">{item.action}</p>
+                  <p className="text-xs text-white font-medium">{item.action}</p>
                   <p className="text-[10px] text-gold font-bold mt-0.5">{item.reward}</p>
                 </div>
               ))}
@@ -966,16 +872,6 @@ function InviteSystem() {
           </div>
         </FadeIn>
 
-        {/* Invite tree teaser */}
-        <FadeIn delay={0.55} className="mt-8 text-center">
-          <div className="inline-flex items-center gap-3 bg-card rounded-full border border-border px-5 py-3">
-            <span className="text-sm">🌳</span>
-            <span className="text-sm text-neutral-400">
-              Tu <span className="text-white font-semibold">árbol de invitaciones</span> crece con cada persona que metes.
-              El founding member con el árbol más grande gana.
-            </span>
-          </div>
-        </FadeIn>
       </div>
     </section>
   )
@@ -990,22 +886,18 @@ function WhyItWorks() {
     {
       title: 'La vergüenza funciona mejor que la motivación',
       desc: 'Puedes ignorar una notificación. No puedes ignorar a tu squad viéndote fallar.',
-      icon: '👀',
     },
     {
       title: 'Los vicios son la zanahoria perfecta',
       desc: 'No te levantas a las 6 por "salud". Te levantas porque quieres esa cerveza el viernes.',
-      icon: '🍺',
     },
     {
       title: 'La competición es adictiva',
       desc: 'Ver a Carlos por encima tuyo en el ranking duele. Y eso te mueve el culo.',
-      icon: '🏆',
     },
     {
       title: '5 invitaciones. Ni una más.',
       desc: 'No puedes entrar si nadie te invita. Y cada persona solo tiene 5. Eso convierte cada invitación en oro.',
-      icon: '🔒',
     },
   ]
 
@@ -1025,9 +917,8 @@ function WhyItWorks() {
             <FadeIn key={i} delay={0.1 + i * 0.1}>
               <motion.div
                 className="bg-card rounded-2xl border border-border p-6 h-full"
-                whileHover={{ y: -4, transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                whileHover={{ y: -4, borderColor: 'rgba(212,168,67,0.15)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
               >
-                <span className="text-3xl mb-3 block">{r.icon}</span>
                 <h3 className="text-base font-bold text-white mb-2">{r.title}</h3>
                 <p className="text-sm text-neutral-400 leading-relaxed">{r.desc}</p>
               </motion.div>
@@ -1078,7 +969,7 @@ function InviteCTA() {
       <div className="max-w-3xl mx-auto px-5 text-center relative">
         <FadeIn>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold/20 bg-gold/[0.05] text-xs text-gold font-semibold mb-6">
-            🔒 Solo por invitación
+            Solo por invitación
           </div>
           <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
             NO PUEDES ENTRAR.
@@ -1135,13 +1026,13 @@ function Footer() {
           <div className="flex items-center gap-4">
             {[
               { name: 'Twitter', icon: '𝕏' },
-              { name: 'Instagram', icon: '📷' },
-              { name: 'TikTok', icon: '🎵' },
+              { name: 'Instagram', icon: 'IG' },
+              { name: 'TikTok', icon: 'TT' },
             ].map((s) => (
               <a
                 key={s.name}
                 href="#"
-                className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center text-sm hover:bg-white/10 transition"
+                className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center text-xs font-bold text-neutral-500 hover:text-white hover:border-gold/20 transition"
                 aria-label={s.name}
               >
                 {s.icon}
