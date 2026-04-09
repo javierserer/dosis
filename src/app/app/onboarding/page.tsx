@@ -178,30 +178,45 @@ export default function OnboardingPage() {
     if (!user) { setLoading(false); return }
 
     if (squadOption === 'create' && squadName.trim()) {
-      const { data: squad } = await supabase
+      const squadId = crypto.randomUUID()
+      const { error: squadErr } = await supabase
         .from('squads')
-        .insert({ name: squadName.trim(), created_by: user.id })
-        .select('id')
-        .single()
+        .insert({ id: squadId, name: squadName.trim(), created_by: user.id })
 
-      if (squad) {
-        await supabase
-          .from('squad_members')
-          .insert({ squad_id: squad.id, user_id: user.id, role: 'owner' })
+      if (squadErr) {
+        setError('Error creando squad: ' + squadErr.message)
+        setLoading(false)
+        return
+      }
+
+      const { error: memberErr } = await supabase
+        .from('squad_members')
+        .insert({ squad_id: squadId, user_id: user.id, role: 'owner' })
+
+      if (memberErr) {
+        setError('Error uniéndote al squad: ' + memberErr.message)
+        setLoading(false)
+        return
       }
     } else if (squadOption === 'join' && squadCode.trim()) {
-      const { data: squad } = await supabase
+      const { data: squad, error: findErr } = await supabase
         .from('squads')
         .select('id')
         .eq('invite_code', squadCode.trim().toUpperCase())
         .single()
 
-      if (squad) {
-        await supabase
-          .from('squad_members')
-          .insert({ squad_id: squad.id, user_id: user.id })
-      } else {
+      if (findErr || !squad) {
         setError('Código de squad no encontrado')
+        setLoading(false)
+        return
+      }
+
+      const { error: joinErr } = await supabase
+        .from('squad_members')
+        .insert({ squad_id: squad.id, user_id: user.id })
+
+      if (joinErr) {
+        setError('Error uniéndote al squad: ' + joinErr.message)
         setLoading(false)
         return
       }
