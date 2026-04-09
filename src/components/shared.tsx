@@ -18,7 +18,7 @@ export function Logo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const cls = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' }[size]
   return (
     <span className={`${cls} font-extrabold tracking-tight`}>
-      <span className="text-accent">G</span>RINTA
+      <span className="text-accent">N</span>IVEL
     </span>
   )
 }

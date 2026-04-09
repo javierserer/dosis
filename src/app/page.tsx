@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FadeIn, CountUp, Logo, Pts, SPRING, SPRING_SNAPPY } from '@/components/shared'
+import { FadeIn, CountUp, Logo, SPRING, SPRING_SNAPPY } from '@/components/shared'
 import {
-  Flame, Heart, Target, Users, BarChart3, Trophy, Plus,
-  ChevronRight, Check, ArrowRight, Zap, TrendingUp,
+  Flame, Heart, Target, Users, BarChart3, Trophy,
+  ChevronRight, Check, ArrowRight, Zap, TrendingUp, Swords,
 } from 'lucide-react'
 
 /* ================================================================
@@ -71,9 +71,9 @@ function Hero() {
   const inView = useInView(ref, { once: true })
 
   const feedItems = [
-    { name: 'Carlos', action: 'Gym 1h', pts: 50, kudos: 8, time: 'Hace 12min' },
-    { name: 'María', action: 'Leer 30min', pts: 30, kudos: 5, time: 'Hace 45min' },
-    { name: 'Tú', action: 'Madrugar 6:30', pts: 50, kudos: 12, time: 'Hace 2h', isYou: true },
+    { name: 'Carlos', action: 'Gym 1h', pts: 50, kudos: 8, time: '12min' },
+    { name: 'María', action: 'Leer 30min', pts: 30, kudos: 5, time: '45min' },
+    { name: 'Tú', action: 'Madrugar 6:30', pts: 50, kudos: 12, time: '2h', isYou: true },
   ]
 
   return (
@@ -81,7 +81,6 @@ function Hero() {
       <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full bg-accent/[0.04] blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-5 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-        {/* Text */}
         <div className="flex-1 text-center lg:text-left">
           <motion.div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface text-xs text-muted mb-6"
@@ -99,9 +98,9 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.2 }}
           >
-            Cada hábito
+            Sube de
             <br />
-            <span className="text-accent">cuenta.</span>
+            <span className="text-accent">nivel.</span>
           </motion.h1>
 
           <motion.p
@@ -110,9 +109,9 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.35 }}
           >
-            Trackea tus hábitos, gana puntos, comparte tu progreso con tu squad.
+            Tus hábitos, tus puntos, tu squad.
             <br className="hidden sm:block" />{' '}
-            <span className="text-foreground font-medium">Como Strava, pero para todo lo que te hace mejor.</span>
+            <span className="text-foreground font-medium">La app de hábitos que engancha.</span>
           </motion.p>
 
           <motion.div
@@ -157,7 +156,7 @@ function Hero() {
           </motion.div>
         </div>
 
-        {/* Phone mockup with activity feed */}
+        {/* Phone mockup */}
         <motion.div
           className="relative shrink-0"
           initial={{ opacity: 0, scale: 0.9, y: 40 }}
@@ -168,7 +167,7 @@ function Hero() {
             <div className="pt-10 px-4 pb-4 h-full flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-extrabold tracking-tight text-gray-900">
-                  <span className="text-accent">G</span>RINTA
+                  <span className="text-accent">N</span>IVEL
                 </span>
                 <div className="flex items-center gap-1.5 text-xs text-accent font-bold">
                   <Flame className="w-3.5 h-3.5" /> 14d
@@ -213,13 +212,12 @@ function Hero() {
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 1.3 }}
               >
-                <p className="text-[10px] text-gray-400">Tu saldo</p>
-                <p className="text-xl font-extrabold text-gray-900">850 <span className="text-xs text-gray-400 font-normal">pts</span></p>
+                <p className="text-[10px] text-gray-400">Tu nivel</p>
+                <p className="text-xl font-extrabold text-gray-900">12 <span className="text-xs text-gray-400 font-normal">nivel</span></p>
               </motion.div>
             </div>
           </PhoneFrame>
 
-          {/* Floating badge */}
           <motion.div
             className="absolute -right-6 top-28 bg-white border border-border rounded-xl p-3 shadow-lg w-44"
             initial={{ opacity: 0, x: 20, scale: 0.85 }}
@@ -238,7 +236,6 @@ function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Streak badge */}
           <motion.div
             className="absolute -left-4 bottom-28 bg-white border border-border rounded-xl p-3 shadow-lg"
             initial={{ opacity: 0, x: -20, scale: 0.85 }}
@@ -269,13 +266,13 @@ function Hero() {
 function ActivityTicker() {
   const activities = [
     'Carlos completó Gym 1h · +50 pts',
-    'María desbloqueó "Monje" — 30 días sin alcohol',
+    'María desbloqueó racha de 30 días',
     'David recibió 8 kudos por su racha',
     'Laura retó a Pablo · Running semanal',
-    'Ana lleva 30 días de racha · x4 multiplicador',
-    'Los Disciplinados: top 5% global esta semana',
-    '12 personas entraron esta semana por invitación',
+    'Ana subió al nivel 15',
+    'Los Disciplinados: top squad esta semana',
     'Javier completó todos sus hábitos hoy',
+    'Sara lleva 21 días sin fallar',
   ]
 
   return (
@@ -308,9 +305,9 @@ function ActivityTicker() {
 
 function HowItWorks() {
   const steps = [
-    { icon: Target, title: 'Define tus hábitos', desc: 'Los que quieras: gym, lectura, meditación, skincare, no-fap... lo que sea tuyo. Tú eliges la dificultad y los puntos.' },
-    { icon: Flame, title: 'Gana puntos', desc: 'Cumple y acumula. Las rachas multiplican. 7 días seguidos = puntos dobles. Tu squad recibe cada actividad.' },
-    { icon: Heart, title: 'Recibe kudos', desc: 'Tu squad ve tu progreso y te da kudos. Compite en el ranking, reta a amigos, y gasta tus puntos en lo que quieras.' },
+    { icon: Target, title: 'Elige tus hábitos', desc: 'Gym, lectura, meditación, skincare... los que quieras. Tú pones la dificultad y los puntos.' },
+    { icon: Flame, title: 'Cumple y sube', desc: 'Cada hábito completado suma puntos. Las rachas multiplican. 7 días seguidos = puntos dobles.' },
+    { icon: Trophy, title: 'Compite con tu squad', desc: 'Ranking semanal, duelos 1v1 y kudos. Tu equipo te empuja a no fallar.' },
   ]
 
   return (
@@ -319,7 +316,7 @@ function HowItWorks() {
         <FadeIn className="text-center mb-16">
           <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Así funciona</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Tres pasos. Cero excusas.
+            Elige. Cumple. Compite.
           </h2>
         </FadeIn>
 
@@ -345,91 +342,6 @@ function HowItWorks() {
 }
 
 /* ================================================================
-   ECONOMY
-   ================================================================ */
-
-function Economy() {
-  const earnings = [
-    { name: 'Gym 1h', pts: 50 },
-    { name: 'Leer 30min', pts: 30 },
-    { name: 'Madrugar antes de las 7', pts: 50 },
-    { name: 'Sin alcohol hoy', pts: 30 },
-    { name: 'Meditar 10min', pts: 15 },
-    { name: 'Lo que tú quieras', pts: '??' },
-  ]
-
-  const rewards = [
-    { name: 'Cerveza', pts: 100 },
-    { name: 'Cheat meal', pts: 150 },
-    { name: 'Netflix binge', pts: 80 },
-    { name: 'Dormir hasta tarde', pts: 60 },
-    { name: 'Tu vicio favorito', pts: '??' },
-  ]
-
-  return (
-    <section className="py-24 sm:py-32 bg-surface">
-      <div className="max-w-6xl mx-auto px-5">
-        <FadeIn className="text-center mb-16">
-          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu economía</p>
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Gana con disciplina.
-            <br />
-            <span className="text-muted">Gasta en lo que quieras.</span>
-          </h2>
-        </FadeIn>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <FadeIn delay={0.1}>
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <TrendingUp className="w-4 h-4 text-success" />
-                <h3 className="font-bold text-base">Ganas</h3>
-              </div>
-              <div className="space-y-3">
-                {earnings.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-muted">{item.name}</span>
-                    <span className="text-sm font-bold text-accent tabular-nums">+{item.pts}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.25}>
-            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <Zap className="w-4 h-4 text-muted" />
-                <h3 className="font-bold text-base">Gastas</h3>
-              </div>
-              <div className="space-y-3">
-                {rewards.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-muted">{item.name}</span>
-                    <span className="text-sm font-bold text-gray-400 tabular-nums">−{item.pts}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-
-        <FadeIn delay={0.4} className="mt-8 text-center">
-          <div className="inline-flex items-center gap-3 bg-white rounded-full border border-border px-5 py-3 shadow-sm">
-            <span className="text-sm text-muted">La matemática es simple:</span>
-            <span className="text-sm font-bold">
-              <span className="text-accent">3 gym</span>
-              {' = '}
-              <span className="text-foreground">1 cerveza + 1 cheat meal</span>
-            </span>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
    FEED PREVIEW
    ================================================================ */
 
@@ -437,30 +349,27 @@ function FeedPreview() {
   const activities = [
     { name: 'Carlos M.', initials: 'CM', action: 'Gym 1h', pts: 50, kudos: 12, time: 'Hace 12 min', streak: 21 },
     { name: 'María L.', initials: 'ML', action: 'Meditación 15min', pts: 30, kudos: 8, time: 'Hace 45 min' },
-    { name: 'Javier S.', initials: 'JS', action: 'Mascarilla pelo', pts: 15, kudos: 3, time: 'Hace 1h', isYou: true },
-    { name: 'David R.', initials: 'DR', action: 'Leer 30min', pts: 30, kudos: 5, time: 'Hace 2h' },
+    { name: 'Javier S.', initials: 'JS', action: 'Leer 30min', pts: 30, kudos: 3, time: 'Hace 1h', isYou: true },
+    { name: 'David R.', initials: 'DR', action: 'Sin alcohol hoy', pts: 30, kudos: 5, time: 'Hace 2h' },
   ]
 
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-24 sm:py-32 bg-surface">
       <div className="max-w-6xl mx-auto px-5">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <div className="flex-1 text-center lg:text-left">
             <FadeIn>
               <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Activity feed</p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Ve lo que hace
+                Tu squad ve
                 <br />
-                tu squad.
-                <br />
-                <span className="text-muted">Dale kudos.</span>
+                cada paso.
               </h2>
             </FadeIn>
 
             <FadeIn delay={0.15}>
               <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
-                Cada hábito completado aparece en el feed. Tu equipo te ve, te celebra, te motiva.
-                <span className="text-foreground font-medium"> Como Strava, pero para la vida real.</span>
+                Cada hábito completado aparece en el feed. Tu equipo te celebra con kudos y te empuja cuando flojeas.
               </p>
             </FadeIn>
 
@@ -468,7 +377,7 @@ function FeedPreview() {
               <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
                 {[
                   { icon: Heart, text: 'Kudos con un tap', detail: 'Celebra cada logro de tu equipo' },
-                  { icon: Users, text: 'Feed de tu squad', detail: 'Ve el progreso de todos en tiempo real' },
+                  { icon: Users, text: 'Feed en tiempo real', detail: 'Ve el progreso de todos al instante' },
                   { icon: Flame, text: 'Rachas visibles', detail: 'Las rachas largas inspiran al grupo' },
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 text-left">
@@ -485,7 +394,6 @@ function FeedPreview() {
             </FadeIn>
           </div>
 
-          {/* Feed mockup */}
           <FadeIn delay={0.2} className="shrink-0">
             <div className="w-[320px] bg-white rounded-2xl border border-border shadow-lg p-4 space-y-3">
               {activities.map((a, i) => (
@@ -543,7 +451,7 @@ function Squads() {
   ]
 
   return (
-    <section id="squads" className="py-24 sm:py-32 bg-surface" ref={ref}>
+    <section id="squads" className="py-24 sm:py-32" ref={ref}>
       <div className="max-w-6xl mx-auto px-5">
         <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
           <div className="flex-1 text-center lg:text-left">
@@ -554,7 +462,7 @@ function Squads() {
                 <br />
                 te mantiene
                 <br />
-                <span className="text-muted">en marcha.</span>
+                <span className="text-muted">arriba.</span>
               </h2>
             </FadeIn>
 
@@ -567,9 +475,9 @@ function Squads() {
 
             <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
               {[
-                { icon: Trophy, text: 'Ranking semanal', detail: 'Compite por el primer puesto cada semana' },
-                { icon: Users, text: 'Duelos 1v1', detail: 'Reta a cualquiera. El perdedor paga.' },
-                { icon: BarChart3, text: 'Progreso compartido', detail: 'Ve las stats de todo tu squad' },
+                { icon: Trophy, text: 'Ranking semanal', detail: 'Compite por ser el primero cada semana' },
+                { icon: Swords, text: 'Duelos 1v1', detail: 'Reta a quien quieras. El que pierda, paga.' },
+                { icon: BarChart3, text: 'Stats compartidas', detail: 'Ve las stats de todo tu squad' },
               ].map((f, i) => (
                 <FadeIn key={i} delay={0.3 + i * 0.1}>
                   <div className="flex items-start gap-3 text-left">
@@ -586,7 +494,6 @@ function Squads() {
             </div>
           </div>
 
-          {/* Leaderboard mockup */}
           <motion.div
             className="shrink-0 w-[300px]"
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -603,7 +510,7 @@ function Squads() {
                   <motion.div
                     key={i}
                     className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
-                      m.isYou ? 'bg-accent/[0.05] border border-accent/10' : m.isLast ? 'bg-gray-50' : 'bg-gray-50'
+                      m.isYou ? 'bg-accent/[0.05] border border-accent/10' : 'bg-gray-50'
                     }`}
                     initial={{ opacity: 0, x: 20 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
@@ -630,183 +537,26 @@ function Squads() {
 }
 
 /* ================================================================
-   PROGRESS
+   WHY IT WORKS
    ================================================================ */
 
-function Progress() {
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="max-w-6xl mx-auto px-5">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          <div className="flex-1 text-center lg:text-left">
-            <FadeIn>
-              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu progreso</p>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Los números
-                <br />
-                <span className="text-muted">no mienten.</span>
-              </h2>
-            </FadeIn>
-
-            <FadeIn delay={0.15}>
-              <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
-                Resumen semanal automático. Tendencias, rachas, puntos.
-                <span className="text-foreground font-medium"> Tu training log personal.</span>
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
-                {[
-                  { icon: BarChart3, text: 'Resumen semanal', detail: 'Progreso de cada hábito, tendencias y rachas' },
-                  { icon: TrendingUp, text: 'Tendencias', detail: 'Compara semana a semana, ve tu evolución' },
-                  { icon: Trophy, text: 'Personal records', detail: 'Mejor racha, mejor semana, más puntos en un día' },
-                ].map((f, i) => (
-                  <div key={i} className="flex items-start gap-3 text-left">
-                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <f.icon className="w-4 h-4 text-accent" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{f.text}</p>
-                      <p className="text-xs text-muted">{f.detail}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Stats mockup */}
-          <FadeIn delay={0.2} className="shrink-0">
-            <div className="w-[300px] bg-white rounded-2xl border border-border shadow-lg p-5">
-              <p className="text-xs font-bold text-gray-900 mb-1">Semana 14</p>
-              <p className="text-[10px] text-gray-400 mb-4">vs semana anterior: <span className="text-accent font-bold">+12%</span></p>
-
-              <div className="space-y-3 mb-4">
-                {[
-                  { name: 'Gym', done: 5, total: 5 },
-                  { name: 'Lectura', done: 4, total: 7 },
-                  { name: 'Sin alcohol', done: 6, total: 7 },
-                  { name: 'Meditación', done: 3, total: 5 },
-                ].map((h, i) => (
-                  <div key={i}>
-                    <div className="flex justify-between text-[10px] mb-1">
-                      <span className="text-gray-500">{h.name}</span>
-                      <span className={`font-bold ${h.done === h.total ? 'text-accent' : 'text-gray-700'}`}>
-                        {h.done}/{h.total}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${h.done === h.total ? 'bg-accent' : 'bg-accent/40'}`}
-                        style={{ width: `${(h.done / h.total) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: 'Puntos', value: '+420' },
-                  { label: 'Racha', value: '14d' },
-                  { label: 'Squad', value: '#3' },
-                ].map((s, i) => (
-                  <div key={i} className="bg-gray-50 rounded-lg p-2.5 text-center">
-                    <p className="text-base font-extrabold text-gray-900">{s.value}</p>
-                    <p className="text-[9px] text-gray-400">{s.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
-   INVITE SYSTEM
-   ================================================================ */
-
-function InviteSystem() {
-  const tiers = [
-    { count: '500', label: 'Founding Members', invites: 10, border: 'border-accent/30' },
-    { count: '2.500', label: 'Nivel 2', invites: 5, border: 'border-border' },
-    { count: '12.500', label: 'Nivel 3', invites: 5, border: 'border-border' },
+function WhyItWorks() {
+  const reasons = [
+    { icon: Heart, title: 'Los kudos enganchan', desc: 'Ver a tu squad celebrar tu esfuerzo crea un loop que te hace volver cada día.' },
+    { icon: Trophy, title: 'Nadie quiere ser el último', desc: 'El ranking semanal te empuja. Ver a Carlos por encima tuya te saca del sofá.' },
+    { icon: Flame, title: 'Las rachas multiplican', desc: '7 días = x2 puntos. 30 días = x4. Romper la racha duele. Eso funciona.' },
+    { icon: Target, title: 'Tus hábitos, tus reglas', desc: 'No hay plantillas. Tú decides qué trackear y cuánto vale cada hábito.' },
   ]
 
   return (
     <section className="py-24 sm:py-32 bg-surface">
       <div className="max-w-6xl mx-auto px-5">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Solo por invitación</p>
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Cada invitación es un privilegio.
-            <br />
-            <span className="text-muted">No un enlace genérico.</span>
-          </h2>
-        </FadeIn>
-
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="flex items-center justify-between relative">
-            <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
-            {tiers.map((tier, i) => (
-              <FadeIn key={i} delay={0.1 + i * 0.15} className="relative">
-                <div className={`bg-white border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44 shadow-sm`}>
-                  <p className="text-xl font-extrabold">{tier.count}</p>
-                  <p className="text-[10px] text-muted font-semibold uppercase tracking-wider">{tier.label}</p>
-                  <p className="text-[10px] text-accent font-bold mt-1">{tier.invites} invitaciones</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-
-        <FadeIn delay={0.4}>
-          <div className="bg-white border border-border rounded-2xl p-6 max-w-2xl mx-auto shadow-sm">
-            <h3 className="text-base font-bold mb-4 text-center">Gana más invitaciones</h3>
-            <div className="grid sm:grid-cols-3 gap-4">
-              {[
-                { action: 'Racha de 30 días', reward: '+2 invitaciones' },
-                { action: 'Ganar 3 duelos', reward: '+1 invitación' },
-                { action: 'Squad en top 10%', reward: '+1 para todos' },
-              ].map((item, i) => (
-                <div key={i} className="text-center bg-surface rounded-xl p-3">
-                  <p className="text-xs font-medium">{item.action}</p>
-                  <p className="text-[10px] text-accent font-bold mt-0.5">{item.reward}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
-   WHY IT WORKS
-   ================================================================ */
-
-function WhyItWorks() {
-  const reasons = [
-    { title: 'Los kudos son adictivos', desc: 'Ver a tu equipo celebrar tu esfuerzo genera un loop que te mantiene volviendo.' },
-    { title: 'La competición sana motiva', desc: 'Ver a Carlos por encima tuyo en el ranking. Eso es lo que te saca del sofá.' },
-    { title: 'Los vicios son tu zanahoria', desc: 'No madrugas por "salud". Madrugas porque quieres esa cerveza del viernes.' },
-    { title: '5 invitaciones. Ni una más.', desc: 'Cada persona solo tiene 5. Eso convierte cada invitación en algo valioso.' },
-  ]
-
-  return (
-    <section className="py-24 sm:py-32">
-      <div className="max-w-6xl mx-auto px-5">
-        <FadeIn className="text-center mb-16">
           <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Por qué funciona</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            La ciencia de la disciplina,
+            No es fuerza de voluntad.
             <br />
-            <span className="text-muted">gamificada.</span>
+            <span className="text-muted">Es diseño.</span>
           </h2>
         </FadeIn>
 
@@ -817,6 +567,9 @@ function WhyItWorks() {
                 className="bg-white rounded-2xl border border-border shadow-sm p-6 h-full"
                 whileHover={{ y: -4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
               >
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center mb-3">
+                  <r.icon className="w-4 h-4 text-accent" />
+                </div>
                 <h3 className="text-base font-bold mb-2">{r.title}</h3>
                 <p className="text-sm text-muted leading-relaxed">{r.desc}</p>
               </motion.div>
@@ -834,14 +587,14 @@ function WhyItWorks() {
 
 function Numbers() {
   return (
-    <section className="py-16 bg-surface border-y border-border">
+    <section className="py-16 border-y border-border">
       <div className="max-w-4xl mx-auto px-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { value: 4847, label: 'Personas dentro', suffix: '' },
-            { value: 5, label: 'Invitaciones por persona', suffix: '' },
-            { value: 87, label: 'Usan 3+ invites', suffix: '%' },
-            { value: 14, label: 'Días racha media', suffix: '' },
+            { value: 92, label: 'Completan a diario', suffix: '%' },
+            { value: 14, label: 'Días de racha media', suffix: '' },
+            { value: 3, label: 'Hábitos activos de media', suffix: '' },
           ].map((stat, i) => (
             <FadeIn key={i} delay={i * 0.1}>
               <p className="text-3xl sm:text-4xl font-extrabold">
@@ -865,16 +618,13 @@ function InviteCTA() {
     <section id="join" className="py-24 sm:py-32 relative">
       <div className="max-w-3xl mx-auto px-5 text-center">
         <FadeIn>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface text-xs text-muted font-semibold mb-6">
-            Solo por invitación
-          </div>
           <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
-            ¿Tienes lo que hay que tener?
+            ¿Listo para subir
+            <br />
+            <span className="text-accent">de nivel?</span>
           </h2>
           <p className="mt-6 text-lg text-muted max-w-lg mx-auto leading-relaxed">
-            Cada persona dentro tiene <span className="text-foreground font-semibold">5 invitaciones</span>. Solo 5.
-            <br />
-            Si alguien cree que encajas, te dará una.
+            NIVEL funciona solo por invitación. Si conoces a alguien dentro, pídele un código.
           </p>
         </FadeIn>
 
@@ -885,9 +635,6 @@ function InviteCTA() {
           >
             Tengo una invitación <ArrowRight className="w-5 h-5" />
           </a>
-          <p className="mt-4 text-sm text-muted">
-            ¿No tienes? Consigue que alguien te invite.
-          </p>
         </FadeIn>
       </div>
     </section>
@@ -905,7 +652,7 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <Logo size="sm" />
-            <p className="text-xs text-muted mt-1">Cada hábito cuenta.</p>
+            <p className="text-xs text-muted mt-1">Sube de nivel.</p>
           </div>
           <div className="flex items-center gap-4">
             {[
@@ -925,7 +672,7 @@ function Footer() {
           </div>
         </div>
         <p className="text-center text-[11px] text-muted mt-8">
-          © 2026 GRINTA. Todos los derechos reservados.
+          © 2026 NIVEL. Todos los derechos reservados.
         </p>
       </div>
     </footer>
@@ -943,11 +690,8 @@ export default function Home() {
       <Hero />
       <ActivityTicker />
       <HowItWorks />
-      <Economy />
       <FeedPreview />
       <Squads />
-      <Progress />
-      <InviteSystem />
       <WhyItWorks />
       <Numbers />
       <InviteCTA />

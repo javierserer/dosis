@@ -127,7 +127,7 @@ export default function ProfilePage() {
         </div>
         <div className="flex gap-2">
           <div className="flex-1 bg-surface border border-border rounded-lg px-3 py-2.5 text-xs text-muted font-mono truncate">
-            grinta.app/i/JAV-X8K2
+            nivel.app/i/JAV-X8K2
           </div>
           <motion.button
             onClick={copyLink}

@@ -13,20 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GRINTA — Cada hábito cuenta",
+  title: "NIVEL — Sube de nivel",
   description:
-    "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
+    "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana. La app de hábitos que engancha.",
   openGraph: {
-    title: "GRINTA — Cada hábito cuenta",
+    title: "NIVEL — Sube de nivel",
     description:
-      "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
+      "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana. La app de hábitos que engancha.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GRINTA — Cada hábito cuenta",
+    title: "NIVEL — Sube de nivel",
     description:
-      "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
+      "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana. La app de hábitos que engancha.",
   },
 };
 

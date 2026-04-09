@@ -27,10 +27,10 @@ export default function AccessPage() {
       return
     }
     setError('')
-    if (code === 'FOUNDING') { setIsFounding(true); setInvitedBy('Equipo GRINTA') }
-    else if (code === 'GRINTA1') setInvitedBy('Carlos M.')
+    if (code === 'FOUNDING') { setIsFounding(true); setInvitedBy('Equipo NIVEL') }
+    else if (code === 'NIVEL1') setInvitedBy('Carlos M.')
     else if (code === 'INVITE') setInvitedBy('María L.')
-    else setInvitedBy('Un miembro de GRINTA')
+    else setInvitedBy('Un miembro de NIVEL')
     setStep('phone')
   }
 
