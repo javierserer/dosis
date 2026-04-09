@@ -96,7 +96,7 @@ export default function OnboardingPage() {
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setLoading(false); return }
+    if (!user) { setError('Sesión expirada — recarga la página'); setLoading(false); return }
 
     let avatar_url: string | null = null
     if (avatarFile) {
@@ -105,24 +105,35 @@ export default function OnboardingPage() {
         .from('avatars')
         .upload(path, avatarFile, { upsert: true })
 
-      if (!uploadErr) {
-        const { data: urlData } = supabase.storage
-          .from('avatars')
-          .getPublicUrl(path)
-        avatar_url = urlData.publicUrl
+      if (uploadErr) {
+        setError('Error subiendo foto: ' + uploadErr.message)
+        setLoading(false)
+        return
       }
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(path)
+      avatar_url = urlData.publicUrl
     }
 
     const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '') || displayName.trim().toLowerCase().replace(/[^a-z0-9_]/g, '')
 
-    await supabase
+    const updates: Record<string, string> = {
+      display_name: displayName.trim(),
+      username: cleanUsername,
+    }
+    if (avatar_url) updates.avatar_url = avatar_url
+
+    const { error: updateErr } = await supabase
       .from('profiles')
-      .update({
-        display_name: displayName.trim(),
-        username: cleanUsername,
-        ...(avatar_url ? { avatar_url } : {}),
-      })
+      .update(updates)
       .eq('id', user.id)
+
+    if (updateErr) {
+      setError('Error guardando perfil: ' + updateErr.message)
+      setLoading(false)
+      return
+    }
 
     setLoading(false)
     setStep(2)
@@ -147,7 +158,13 @@ export default function OnboardingPage() {
       }
     })
 
-    await supabase.from('habits').insert(habitsToInsert)
+    const { error: insertErr } = await supabase.from('habits').insert(habitsToInsert)
+
+    if (insertErr) {
+      setError('Error guardando hábitos: ' + insertErr.message)
+      setLoading(false)
+      return
+    }
 
     setLoading(false)
     setStep(3)
@@ -190,10 +207,16 @@ export default function OnboardingPage() {
       }
     }
 
-    await supabase
+    const { error: doneErr } = await supabase
       .from('profiles')
       .update({ onboarding_done: true })
       .eq('id', user.id)
+
+    if (doneErr) {
+      setError('Error finalizando: ' + doneErr.message)
+      setLoading(false)
+      return
+    }
 
     setLoading(false)
     router.push('/app')
