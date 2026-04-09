@@ -185,7 +185,12 @@ export default function HabitsPage() {
 
       <AnimatePresence>
         {showAdd && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden mb-5">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto', transitionEnd: { overflow: 'visible' } }}
+            exit={{ overflow: 'hidden', opacity: 0, height: 0 }}
+            className="overflow-hidden mb-5"
+          >
             <div className="bg-white border border-border rounded-2xl p-5 shadow-sm">
               <p className="text-sm font-semibold mb-4">Nuevo hábito</p>
               <div className="relative mb-3">
