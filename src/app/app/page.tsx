@@ -95,11 +95,19 @@ export default function Dashboard() {
       setEarnedToast(`+${habit.pts}`)
       setTimeout(() => setEarnedToast(null), 1200)
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('habit_logs')
-        .insert({ habit_id: habit.id, user_id: user.id, log_date: today, completed: true, pts_earned: habit.pts })
+        .upsert(
+          { habit_id: habit.id, user_id: user.id, log_date: today, completed: true, pts_earned: habit.pts },
+          { onConflict: 'habit_id,log_date' }
+        )
         .select('id')
         .single()
+
+      if (error) {
+        setHabits(prev => prev.map(h => h.id === habit.id ? { ...h, done: false } : h))
+        return
+      }
 
       if (data) {
         setHabits(prev => prev.map(h => h.id === habit.id ? { ...h, log_id: data.id } : h))
@@ -107,8 +115,13 @@ export default function Dashboard() {
 
       const { data: freshProfile } = await supabase.from('profiles').select('level, xp, streak').eq('id', user.id).single()
       if (freshProfile) setProfile(p => p ? { ...p, ...freshProfile } : p)
-    } else if (habit.log_id) {
-      await supabase.from('habit_logs').delete().eq('id', habit.log_id)
+    } else {
+      const logId = habit.log_id
+      if (logId) {
+        await supabase.from('habit_logs').delete().eq('id', logId)
+      } else {
+        await supabase.from('habit_logs').delete().eq('habit_id', habit.id).eq('log_date', today).eq('user_id', user.id)
+      }
       setHabits(prev => prev.map(h => h.id === habit.id ? { ...h, log_id: null } : h))
     }
   }
