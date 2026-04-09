@@ -523,21 +523,10 @@ function Footer() {
             <Logo size="sm" />
             <p className="text-xs text-muted mt-1">Sube de nivel.</p>
           </div>
-          <div className="flex items-center gap-4">
-            {[
-              { name: 'Twitter', label: '𝕏' },
-              { name: 'Instagram', label: 'IG' },
-              { name: 'TikTok', label: 'TT' },
-            ].map((s) => (
-              <a
-                key={s.name}
-                href="#"
-                className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold text-muted hover:text-accent hover:border-accent/20 transition"
-                aria-label={s.name}
-              >
-                {s.label}
-              </a>
-            ))}
+          <div className="flex items-center gap-4 text-xs text-muted">
+            <a href="/legal/privacidad" className="hover:text-foreground transition">Privacidad</a>
+            <a href="/legal/terminos" className="hover:text-foreground transition">Términos</a>
+            <a href="/legal/cookies" className="hover:text-foreground transition">Cookies</a>
           </div>
         </div>
         <p className="text-center text-[11px] text-muted mt-8">

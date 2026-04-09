@@ -40,3 +40,36 @@ body {
   background: rgba(252, 82, 0, 0.15);
   color: #111827;
 }
+
+.prose-nivel h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+.prose-nivel h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+.prose-nivel p {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+.prose-nivel ul {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.7;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+  margin-bottom: 0.75rem;
+}
+.prose-nivel li {
+  margin-bottom: 0.25rem;
+}
+.prose-nivel strong {
+  color: var(--foreground);
+}
