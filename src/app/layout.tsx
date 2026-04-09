@@ -13,20 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DOSIS — Gánate tus vicios",
+  title: "GRINTA — Cada hábito cuenta",
   description:
-    "Gana puntos por ser disciplinado. Gástalos en vicios reales. Reta a tus amigos o calla para siempre.",
+    "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
   openGraph: {
-    title: "DOSIS — Gánate tus vicios",
+    title: "GRINTA — Cada hábito cuenta",
     description:
-      "La app que convierte tu disciplina en recompensas reales. Squads, duelos y vergüenza pública incluidos.",
+      "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DOSIS — Gánate tus vicios",
+    title: "GRINTA — Cada hábito cuenta",
     description:
-      "La app que convierte tu disciplina en recompensas reales. Squads, duelos y vergüenza pública incluidos.",
+      "Trackea tus hábitos, gana puntos, compite con tu squad. Como Strava, pero para todo lo que te hace mejor.",
   },
 };
 

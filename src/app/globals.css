@@ -1,25 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #fafafa;
-  --gold: #d4a843;
-  --gold-light: #f0d078;
-  --vice: #8b5cf6;
-  --surface: #111111;
-  --card: #1a1a1a;
-  --border: #262626;
+  --background: #ffffff;
+  --foreground: #111827;
+  --accent: #FC5200;
+  --accent-light: #FF6B2B;
+  --accent-bg: #FFF4EE;
+  --surface: #f8f9fa;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+  --success: #059669;
+  --success-bg: #ecfdf5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-vice: var(--vice);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-bg: var(--accent-bg);
   --color-surface: var(--surface);
   --color-card: var(--card);
   --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -31,16 +37,6 @@ body {
 }
 
 ::selection {
-  background: rgba(212, 168, 67, 0.3);
-  color: #fff;
-}
-
-@keyframes gradient-orbit {
-  0% { transform: rotate(0deg) translateX(120px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
-}
-
-@keyframes pulse-gold {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  background: rgba(252, 82, 0, 0.15);
+  color: #111827;
 }

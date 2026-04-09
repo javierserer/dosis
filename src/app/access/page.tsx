@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Logo } from '@/components/shared'
+import { Lock, Phone, KeyRound, ArrowLeft, Flame, Check } from 'lucide-react'
+import Link from 'next/link'
 
 const SPRING = { type: 'spring' as const, stiffness: 200, damping: 22 }
-
-const VALID_CODES = ['FOUNDING', 'DOSIS1', 'INVITE']
-const FOUNDING_CODES = ['FOUNDING']
 
 type Step = 'invite' | 'phone' | 'otp'
 
@@ -17,300 +15,221 @@ export default function AccessPage() {
   const [inviteCode, setInviteCode] = useState('')
   const [phone, setPhone] = useState('')
   const [otp, setOtp] = useState('')
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [isFounding, setIsFounding] = useState(false)
   const [invitedBy, setInvitedBy] = useState('')
-  const router = useRouter()
+  const [isFounding, setIsFounding] = useState(false)
 
-  const handleInviteCode = async (e: FormEvent) => {
+  const handleInviteCode = (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    const code = inviteCode.toUpperCase().trim()
-    if (code.length < 4) {
-      setError('Código demasiado corto')
+    const code = inviteCode.trim().toUpperCase()
+    if (code.length < 6) {
+      setError('Código inválido')
       return
     }
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 600))
-
-    // Mock validation: accept any 6+ char code, or special codes
-    if (code.length >= 6 || VALID_CODES.includes(code)) {
-      if (FOUNDING_CODES.includes(code)) setIsFounding(true)
-      setInvitedBy(code.length >= 6 ? 'Carlos' : 'Founding Team')
-      setLoading(false)
-      setStep('phone')
-    } else {
-      setError('Código no válido. Necesitas que alguien te invite.')
-      setLoading(false)
-    }
+    setError('')
+    if (code === 'FOUNDING') { setIsFounding(true); setInvitedBy('Equipo GRINTA') }
+    else if (code === 'GRINTA1') setInvitedBy('Carlos M.')
+    else if (code === 'INVITE') setInvitedBy('María L.')
+    else setInvitedBy('Un miembro de GRINTA')
+    setStep('phone')
   }
 
-  const handleSendOtp = async (e: FormEvent) => {
+  const handlePhone = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!phone || phone.length < 9) return
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 800))
-    setLoading(false)
+    if (phone.length < 9) { setError('Número inválido'); return }
+    setError('')
     setStep('otp')
   }
 
-  const handleVerify = async (e: FormEvent) => {
+  const handleOtp = (e: React.FormEvent) => {
     e.preventDefault()
-    if (otp.length < 6) return
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 600))
-    router.push('/app')
+    if (otp.length < 6) { setError('Código inválido'); return }
+    window.location.href = '/app'
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-5 relative bg-background">
-      {/* Background glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-radial from-gold/[0.06] to-transparent blur-3xl pointer-events-none" />
+    <main className="min-h-screen flex flex-col items-center justify-center px-5 relative bg-white">
+      <div className="absolute top-6 left-6">
+        <Link href="/" className="text-muted hover:text-foreground transition">
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+      </div>
 
-      {/* Logo */}
-      <motion.div
-        className="mb-8 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={SPRING}
-      >
+      <div className="mb-8">
         <Logo size="lg" />
-        <p className="text-sm text-neutral-500 mt-2">Solo por invitación</p>
-      </motion.div>
+      </div>
 
       {/* Step indicator */}
-      <motion.div
-        className="flex items-center gap-2 mb-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div className="flex items-center gap-2 mb-8">
         {['invite', 'phone', 'otp'].map((s, i) => (
           <div key={s} className="flex items-center gap-2">
-            <div
-              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                step === s
-                  ? 'bg-gold w-6'
-                  : i < ['invite', 'phone', 'otp'].indexOf(step)
-                  ? 'bg-gold'
-                  : 'bg-neutral-700'
-              } rounded-full`}
-            />
+            <div className={`w-2 h-2 rounded-full transition ${
+              step === s ? 'bg-accent' : i < ['invite', 'phone', 'otp'].indexOf(step) ? 'bg-success' : 'bg-gray-200'
+            }`} />
+            {i < 2 && <div className={`w-6 h-px ${i < ['invite', 'phone', 'otp'].indexOf(step) ? 'bg-success' : 'bg-gray-200'}`} />}
           </div>
         ))}
-      </motion.div>
+      </div>
 
-      {/* Form */}
       <div className="w-full max-w-sm relative min-h-[280px]">
         <AnimatePresence mode="wait">
-          {/* Step 1: Invite Code */}
           {step === 'invite' && (
             <motion.form
               key="invite"
-              initial={{ opacity: 0, x: -30 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
+              exit={{ opacity: 0, x: -20 }}
               transition={SPRING}
               onSubmit={handleInviteCode}
               className="space-y-4"
             >
               <div className="text-center mb-2">
-                <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center text-sm font-bold text-gold mx-auto mb-3">
-                  INV
+                <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-3">
+                  <Lock className="w-6 h-6 text-accent" />
                 </div>
-                <p className="text-base font-semibold text-white">¿Tienes código de invitación?</p>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Alguien de dentro tiene que invitarte
-                </p>
+                <p className="text-base font-semibold">¿Tienes código de invitación?</p>
+                <p className="text-xs text-muted mt-1">Alguien de dentro tiene que invitarte</p>
               </div>
 
-              <div>
-                <input
-                  type="text"
-                  value={inviteCode}
-                  onChange={(e) => {
-                    setInviteCode(e.target.value.toUpperCase())
-                    setError('')
-                  }}
-                  autoFocus
-                  placeholder="CÓDIGO DE INVITACIÓN"
-                  className="w-full text-center text-lg tracking-widest font-mono px-4 py-4 bg-card border border-border rounded-xl text-white placeholder-neutral-700 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition uppercase"
-                  maxLength={12}
-                />
-                {error && (
-                  <motion.p
-                    className="text-xs text-red-400 text-center mt-2"
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    {error}
-                  </motion.p>
-                )}
-              </div>
+              <input
+                type="text"
+                value={inviteCode}
+                onChange={(e) => { setInviteCode(e.target.value); setError('') }}
+                placeholder="Pega tu código aquí"
+                className="w-full px-4 py-3.5 bg-surface border border-border rounded-xl text-center text-base font-mono tracking-widest placeholder-gray-400 focus:outline-none focus:border-accent/40 transition uppercase"
+                autoFocus
+                autoComplete="off"
+              />
+
+              {error && <p className="text-xs text-red-500 text-center">{error}</p>}
 
               <motion.button
                 type="submit"
-                disabled={loading || inviteCode.length < 4}
-                className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
+                className="w-full py-3.5 rounded-xl bg-accent text-white font-bold text-sm transition"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? <Spinner /> : 'Verificar código'}
+                Verificar código
               </motion.button>
-
-              <a href="/" className="block text-center text-xs text-neutral-600 hover:text-neutral-400 transition mt-2">
-                ← Volver a la página principal
-              </a>
             </motion.form>
           )}
 
-          {/* Step 2: Phone */}
           {step === 'phone' && (
             <motion.form
               key="phone"
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
+              exit={{ opacity: 0, x: -20 }}
               transition={SPRING}
-              onSubmit={handleSendOtp}
+              onSubmit={handlePhone}
               className="space-y-4"
             >
-              {/* Welcome message */}
               <motion.div
                 className="text-center mb-2"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{ ...SPRING, delay: 0.1 }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl mx-auto mb-3">
-                  ✓
+                <div className="w-14 h-14 rounded-2xl bg-success-bg border border-success/20 flex items-center justify-center mx-auto mb-3">
+                  <Check className="w-6 h-6 text-success" />
                 </div>
-                <p className="text-base font-semibold text-emerald-400">¡Código válido!</p>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Invitado por <span className="text-white font-medium">{invitedBy}</span>
-                </p>
+                <p className="text-base font-semibold">Código válido</p>
+                <p className="text-xs text-muted mt-1">Invitado por <span className="text-foreground font-medium">{invitedBy}</span></p>
                 {isFounding && (
                   <motion.div
-                    className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-3 py-1 mt-2"
+                    className="inline-flex items-center gap-1.5 mt-2 bg-accent/10 border border-accent/20 rounded-full px-3 py-1"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.3 }}
+                    transition={{ ...SPRING, delay: 0.3 }}
                   >
-                    <span className="text-xs text-gold font-bold">F</span>
-                    <span className="text-[10px] text-gold font-bold">FOUNDING MEMBER</span>
+                    <Flame className="w-3 h-3 text-accent" />
+                    <span className="text-[10px] text-accent font-bold">FOUNDING MEMBER</span>
                   </motion.div>
                 )}
               </motion.div>
 
-              <div>
-                <label className="block text-sm text-neutral-400 mb-2 font-medium">Tu número de teléfono</label>
-                <div className="flex gap-2">
-                  <div className="px-3.5 py-3 bg-card border border-border rounded-xl text-sm text-neutral-400 flex items-center">
-                    +34
-                  </div>
-                  <input
-                    type="tel"
-                    inputMode="numeric"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                    autoFocus
-                    placeholder="612 345 678"
-                    className="flex-1 px-4 py-3 bg-card border border-border rounded-xl text-white placeholder-neutral-600 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition text-base"
-                    maxLength={9}
-                  />
+              <div className="flex gap-2">
+                <div className="w-16 bg-surface border border-border rounded-xl px-2 py-3.5 text-center text-sm font-medium text-muted">
+                  +34
                 </div>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => { setPhone(e.target.value.replace(/\D/g, '')); setError('') }}
+                  placeholder="Tu teléfono"
+                  className="flex-1 px-4 py-3.5 bg-surface border border-border rounded-xl text-base placeholder-gray-400 focus:outline-none focus:border-accent/40 transition"
+                  autoFocus
+                  autoComplete="tel"
+                  enterKeyHint="send"
+                />
               </div>
+
+              {error && <p className="text-xs text-red-500 text-center">{error}</p>}
 
               <motion.button
                 type="submit"
-                disabled={loading || phone.length < 9}
-                className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
+                className="w-full py-3.5 rounded-xl bg-accent text-white font-bold text-sm transition"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? <Spinner /> : 'Continuar'}
+                Enviar código SMS
               </motion.button>
+
+              <button type="button" onClick={() => setStep('invite')} className="w-full text-center text-xs text-muted hover:text-foreground transition">
+                Cambiar código de invitación
+              </button>
             </motion.form>
           )}
 
-          {/* Step 3: OTP */}
           {step === 'otp' && (
             <motion.form
               key="otp"
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
+              exit={{ opacity: 0, x: -20 }}
               transition={SPRING}
-              onSubmit={handleVerify}
+              onSubmit={handleOtp}
               className="space-y-4"
             >
               <div className="text-center mb-2">
-                <div className="w-14 h-14 rounded-2xl bg-card border border-border flex items-center justify-center text-sm font-bold text-gold mx-auto mb-3">
-                  OTP
+                <div className="w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mx-auto mb-3">
+                  <KeyRound className="w-6 h-6 text-accent" />
                 </div>
-                <p className="text-sm text-neutral-400">Código enviado a</p>
-                <p className="text-sm text-white font-semibold">+34 {phone}</p>
+                <p className="text-sm text-muted">Código enviado a</p>
+                <p className="text-sm font-semibold">+34 {phone}</p>
               </div>
 
               <input
                 type="text"
                 inputMode="numeric"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                autoFocus
+                onChange={(e) => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError('') }}
                 placeholder="000000"
-                className="w-full text-center text-3xl tracking-[0.4em] font-mono px-4 py-4 bg-card border border-border rounded-xl text-white placeholder-neutral-700 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition"
+                className="w-full px-4 py-3.5 bg-surface border border-border rounded-xl text-center text-2xl font-mono tracking-[0.4em] placeholder-gray-300 focus:outline-none focus:border-accent/40 transition"
+                autoFocus
+                autoComplete="one-time-code"
               />
+
+              {error && <p className="text-xs text-red-500 text-center">{error}</p>}
 
               <motion.button
                 type="submit"
-                disabled={loading || otp.length < 6}
-                className="w-full py-3.5 rounded-xl bg-gold text-black font-bold text-base disabled:opacity-30 transition"
+                className="w-full py-3.5 rounded-xl bg-accent text-white font-bold text-sm transition"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? <Spinner /> : 'Entrar en DOSIS'}
+                Entrar
               </motion.button>
 
-              <div className="flex items-center justify-between text-xs">
-                <button
-                  type="button"
-                  onClick={() => { setStep('phone'); setOtp('') }}
-                  className="text-neutral-500 hover:text-white transition"
-                >
-                  ← Cambiar número
-                </button>
-                <button type="button" className="text-gold hover:text-gold-light transition">
-                  Reenviar código
-                </button>
-              </div>
+              <button type="button" onClick={() => setStep('phone')} className="w-full text-center text-xs text-muted hover:text-foreground transition">
+                Cambiar número
+              </button>
             </motion.form>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Bottom info */}
-      <motion.p
-        className="absolute bottom-6 text-[11px] text-neutral-700 text-center px-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
+      <p className="mt-12 text-xs text-muted text-center">
         Solo puedes entrar con una invitación.{' '}
-        <a href="/" className="text-neutral-500 hover:text-neutral-300 transition underline">
-          Volver
-        </a>
-      </motion.p>
+        <Link href="/" className="text-accent hover:underline">Volver</Link>
+      </p>
     </main>
-  )
-}
-
-function Spinner() {
-  return (
-    <span className="flex items-center justify-center gap-2">
-      <motion.span
-        className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}
-      />
-    </span>
   )
 }

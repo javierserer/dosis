@@ -6,13 +6,10 @@ import { useRef, useEffect, type ReactNode } from 'react'
 export const SPRING = { type: 'spring' as const, stiffness: 80, damping: 18 }
 export const SPRING_SNAPPY = { type: 'spring' as const, stiffness: 200, damping: 22 }
 
-export function Coin({ size = 16 }: { size?: number }) {
+export function Pts({ value, className = '' }: { value: number | string; className?: string }) {
   return (
-    <span
-      className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 font-bold text-black shrink-0"
-      style={{ width: size, height: size, fontSize: size * 0.55 }}
-    >
-      D
+    <span className={`inline-flex items-center gap-1 font-bold tabular-nums ${className}`}>
+      {value} <span className="text-[0.7em] font-semibold text-muted">pts</span>
     </span>
   )
 }
@@ -20,8 +17,8 @@ export function Coin({ size = 16 }: { size?: number }) {
 export function Logo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const cls = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' }[size]
   return (
-    <span className={`${cls} font-extrabold tracking-tighter`}>
-      <span className="text-gold">D</span>OSIS
+    <span className={`${cls} font-extrabold tracking-tight`}>
+      <span className="text-accent">G</span>RINTA
     </span>
   )
 }

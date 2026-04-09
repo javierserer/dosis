@@ -1,62 +1,12 @@
 'use client'
 
-import { motion, useInView, useSpring, useTransform, useMotionValue } from 'framer-motion'
-import { useRef, useState, useEffect, type ReactNode } from 'react'
-
-/* ================================================================
-   ANIMATION PRIMITIVES
-   ================================================================ */
-
-const SPRING = { type: 'spring' as const, stiffness: 80, damping: 18 }
-const SPRING_SNAPPY = { type: 'spring' as const, stiffness: 200, damping: 22 }
-
-function FadeIn({
-  children,
-  delay = 0,
-  direction = 'up',
-  className = '',
-}: {
-  children: ReactNode
-  delay?: number
-  direction?: 'up' | 'down' | 'left' | 'right'
-  className?: string
-}) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  const offsets = { up: [30, 0], down: [-30, 0], left: [0, -40], right: [0, 40] }
-  const [y, x] = offsets[direction]
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y, x }}
-      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
-      transition={{ ...SPRING, delay }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-function CountUp({ target, prefix = '', suffix = '' }: { target: number; prefix?: string; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true })
-  const motionVal = useMotionValue(0)
-  const springVal = useSpring(motionVal, { stiffness: 50, damping: 20 })
-
-  useEffect(() => {
-    if (inView) motionVal.set(target)
-  }, [inView, target, motionVal])
-
-  useEffect(() => {
-    const unsub = springVal.on('change', (v) => {
-      if (ref.current) ref.current.textContent = `${prefix}${Math.round(v).toLocaleString('es-ES')}${suffix}`
-    })
-    return unsub
-  }, [springVal, prefix, suffix])
-
-  return <span ref={ref}>{prefix}0{suffix}</span>
-}
+import { useState, useEffect, useRef, type ReactNode } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { FadeIn, CountUp, Logo, Pts, SPRING, SPRING_SNAPPY } from '@/components/shared'
+import {
+  Flame, Heart, Target, Users, BarChart3, Trophy, Plus,
+  ChevronRight, Check, ArrowRight, Zap, TrendingUp,
+} from 'lucide-react'
 
 /* ================================================================
    PHONE FRAME
@@ -64,27 +14,12 @@ function CountUp({ target, prefix = '', suffix = '' }: { target: number; prefix?
 
 function PhoneFrame({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`w-[280px] h-[560px] bg-[#1c1c1e] rounded-[3rem] p-[6px] shadow-2xl shadow-black/50 border border-white/[0.08] ${className}`}>
-      <div className="w-full h-full bg-[#0c0c0c] rounded-[2.6rem] overflow-hidden relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-[#1c1c1e] rounded-b-2xl z-10" />
+    <div className={`w-[280px] h-[560px] bg-gray-900 rounded-[3rem] p-[6px] shadow-2xl shadow-gray-300/40 border border-gray-200 ${className}`}>
+      <div className="w-full h-full bg-white rounded-[2.6rem] overflow-hidden relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100px] h-[28px] bg-gray-900 rounded-b-2xl z-10" />
         {children}
       </div>
     </div>
-  )
-}
-
-/* ================================================================
-   COIN ICON
-   ================================================================ */
-
-function Coin({ size = 16 }: { size?: number }) {
-  return (
-    <span
-      className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 font-bold text-black shrink-0"
-      style={{ width: size, height: size, fontSize: size * 0.55 }}
-    >
-      D
-    </span>
   )
 }
 
@@ -103,25 +38,23 @@ function Navbar() {
   return (
     <nav
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-black/70 backdrop-blur-2xl border-b border-white/[0.06]' : 'bg-transparent'
+        scrolled ? 'bg-white/80 backdrop-blur-2xl border-b border-border shadow-sm' : 'bg-transparent'
       }`}
     >
       <div className="max-w-6xl mx-auto px-5 flex items-center justify-between h-16">
-        <span className="text-lg font-extrabold tracking-tighter">
-          <span className="text-gold">D</span>OSIS
-        </span>
+        <Logo size="sm" />
         <div className="flex items-center gap-6">
-          <a href="#como-funciona" className="hidden sm:block text-sm text-neutral-400 hover:text-white transition">
+          <a href="#como-funciona" className="hidden sm:block text-sm text-muted hover:text-foreground transition">
             Cómo funciona
           </a>
-          <a href="#squads" className="hidden sm:block text-sm text-neutral-400 hover:text-white transition">
+          <a href="#squads" className="hidden sm:block text-sm text-muted hover:text-foreground transition">
             Squads
           </a>
           <a
-            href="#waitlist"
-            className="px-4 py-2 text-sm font-semibold rounded-full bg-gold text-black hover:bg-gold-light transition"
+            href="#join"
+            className="px-4 py-2 text-sm font-semibold rounded-full bg-accent text-white hover:bg-accent-light transition"
           >
-            ¿Tienes invitación?
+            Únete
           </a>
         </div>
       </div>
@@ -137,29 +70,27 @@ function Hero() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true })
 
-  const habits = [
-    { name: 'Gym 1h', coins: 80, done: true },
-    { name: 'Leer 30min', coins: 40, done: true },
-    { name: 'Sin alcohol', coins: 25, done: true },
-    { name: 'Meditar 10min', coins: 20, done: false },
+  const feedItems = [
+    { name: 'Carlos', action: 'Gym 1h', pts: 50, kudos: 8, time: 'Hace 12min' },
+    { name: 'María', action: 'Leer 30min', pts: 30, kudos: 5, time: 'Hace 45min' },
+    { name: 'Tú', action: 'Madrugar 6:30', pts: 50, kudos: 12, time: 'Hace 2h', isYou: true },
   ]
 
   return (
     <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden pt-20 pb-16">
-      {/* Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-gold/[0.07] via-transparent to-transparent blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full bg-accent/[0.04] blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-5 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
         {/* Text */}
         <div className="flex-1 text-center lg:text-left">
           <motion.div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs text-neutral-400 mb-6"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface text-xs text-muted mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.1 }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-            La app que no sabías que necesitabas
+            <Flame className="w-3.5 h-3.5 text-accent" />
+            Solo por invitación
           </motion.div>
 
           <motion.h1
@@ -168,24 +99,20 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.2 }}
           >
-            GÁNATE
+            Cada hábito
             <br />
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
-              TUS VICIOS.
-            </span>
+            <span className="text-accent">cuenta.</span>
           </motion.h1>
 
           <motion.p
-            className="mt-6 text-lg sm:text-xl text-neutral-400 max-w-lg mx-auto lg:mx-0 leading-relaxed"
+            className="mt-6 text-lg sm:text-xl text-muted max-w-lg mx-auto lg:mx-0 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.35 }}
           >
-            Gana puntos por ser disciplinado.
+            Trackea tus hábitos, gana puntos, comparte tu progreso con tu squad.
             <br className="hidden sm:block" />{' '}
-            Gástalos en vicios reales.
-            <br className="hidden sm:block" />{' '}
-            <span className="text-white font-medium">Solo entras si alguien cree que te lo mereces.</span>
+            <span className="text-foreground font-medium">Como Strava, pero para todo lo que te hace mejor.</span>
           </motion.p>
 
           <motion.div
@@ -196,13 +123,13 @@ function Hero() {
           >
             <a
               href="/access"
-              className="px-8 py-3.5 rounded-full bg-gold text-black font-bold text-base hover:bg-gold-light transition hover:scale-105 active:scale-95 text-center"
+              className="px-8 py-3.5 rounded-full bg-accent text-white font-bold text-base hover:bg-accent-light transition hover:scale-105 active:scale-95 text-center flex items-center justify-center gap-2"
             >
-              Tengo una invitación →
+              Tengo invitación <ArrowRight className="w-4 h-4" />
             </a>
             <a
               href="#como-funciona"
-              className="px-6 py-3.5 rounded-full border border-white/15 text-white font-semibold text-base hover:bg-white/5 transition text-center"
+              className="px-6 py-3.5 rounded-full border border-border text-foreground font-semibold text-base hover:bg-surface transition text-center"
             >
               Cómo funciona
             </a>
@@ -215,22 +142,22 @@ function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
           >
             <div className="flex -space-x-2">
-              {['JA', 'CA', 'MA', 'DA', 'LU'].map((initials, i) => (
+              {['CA', 'MA', 'JA', 'DA', 'LU'].map((initials, i) => (
                 <div
                   key={i}
-                  className="w-7 h-7 rounded-full bg-card border-2 border-background flex items-center justify-center text-[9px] font-bold text-neutral-500"
+                  className="w-7 h-7 rounded-full bg-surface border-2 border-white flex items-center justify-center text-[9px] font-bold text-muted"
                 >
                   {initials}
                 </div>
               ))}
             </div>
-            <p className="text-sm text-neutral-500">
-              <span className="text-white font-semibold">4.847</span> dentro · <span className="text-gold font-medium">Solo por invitación</span>
+            <p className="text-sm text-muted">
+              <span className="text-foreground font-semibold">4.847</span> personas dentro
             </p>
           </motion.div>
         </div>
 
-        {/* Phone mockup */}
+        {/* Phone mockup with activity feed */}
         <motion.div
           className="relative shrink-0"
           initial={{ opacity: 0, scale: 0.9, y: 40 }}
@@ -239,80 +166,62 @@ function Hero() {
         >
           <PhoneFrame>
             <div className="pt-10 px-4 pb-4 h-full flex flex-col">
-              {/* App header */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-extrabold tracking-tighter text-white">
-                  <span className="text-gold">D</span>OSIS
+                <span className="text-sm font-extrabold tracking-tight text-gray-900">
+                  <span className="text-accent">G</span>RINTA
                 </span>
-                <span className="text-xs text-gold font-bold">14d</span>
+                <div className="flex items-center gap-1.5 text-xs text-accent font-bold">
+                  <Flame className="w-3.5 h-3.5" /> 14d
+                </div>
               </div>
 
-              {/* Balance card */}
-              <motion.div
-                className="bg-white/[0.03] rounded-2xl p-4 border border-border mb-4"
-                initial={{ opacity: 0, y: 10 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ ...SPRING_SNAPPY, delay: 0.7 }}
-              >
-                <p className="text-[10px] text-neutral-500 font-medium uppercase tracking-wider">Tu saldo</p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-3xl font-extrabold text-white">850</span>
-                  <Coin size={18} />
-                </div>
-                <p className="text-[10px] text-gold mt-1">+145 hoy</p>
-              </motion.div>
-
-              {/* Habits */}
-              <p className="text-[10px] text-neutral-500 font-semibold uppercase tracking-wider mb-2">Hoy</p>
-              <div className="space-y-2 flex-1">
-                {habits.map((h, i) => (
+              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Feed</p>
+              <div className="space-y-2.5 flex-1">
+                {feedItems.map((item, i) => (
                   <motion.div
                     key={i}
-                    className="flex items-center justify-between bg-white/[0.04] rounded-xl px-3 py-2.5"
+                    className={`rounded-xl p-3 ${item.isYou ? 'bg-accent/[0.06] border border-accent/15' : 'bg-gray-50'}`}
                     initial={{ opacity: 0, x: 20 }}
                     animate={inView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ ...SPRING, delay: 0.8 + i * 0.1 }}
+                    transition={{ ...SPRING, delay: 0.7 + i * 0.12 }}
                   >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] ${
-                          h.done
-                            ? 'bg-emerald-500 text-white'
-                            : 'border border-neutral-600'
-                        }`}
-                      >
-                        {h.done && '✓'}
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-500">
+                        {item.name[0]}
                       </div>
-                      <span className={`text-xs ${h.done ? 'text-neutral-300' : 'text-neutral-500'}`}>{h.name}</span>
+                      <span className="text-xs font-semibold text-gray-900">{item.name}</span>
+                      <span className="text-[10px] text-gray-400 ml-auto">{item.time}</span>
                     </div>
-                    <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1">
-                      +{h.coins} <Coin size={10} />
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Check className="w-3 h-3 text-accent" />
+                        <span className="text-xs text-gray-700">{item.action}</span>
+                        <span className="text-[10px] text-accent font-bold">+{item.pts}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-400">
+                        <Heart className="w-3 h-3" />
+                        <span className="text-[10px]">{item.kudos}</span>
+                      </div>
+                    </div>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Progress */}
-              <div className="mt-3 mb-2">
-                <div className="flex justify-between text-[10px] text-neutral-500 mb-1">
-                  <span>Progreso</span>
-                  <span>3/4</span>
-                </div>
-                <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gold rounded-full"
-                    initial={{ width: 0 }}
-                    animate={inView ? { width: '75%' } : {}}
-                    transition={{ duration: 0.8, delay: 1.3, ease: 'easeOut' }}
-                  />
-                </div>
-              </div>
+              <motion.div
+                className="mt-3 bg-gray-50 rounded-xl p-3 text-center"
+                initial={{ opacity: 0 }}
+                animate={inView ? { opacity: 1 } : {}}
+                transition={{ delay: 1.3 }}
+              >
+                <p className="text-[10px] text-gray-400">Tu saldo</p>
+                <p className="text-xl font-extrabold text-gray-900">850 <span className="text-xs text-gray-400 font-normal">pts</span></p>
+              </motion.div>
             </div>
           </PhoneFrame>
 
           {/* Floating badge */}
           <motion.div
-            className="absolute -right-6 top-28 bg-card border border-border rounded-xl p-3 shadow-2xl shadow-black/50 w-44"
+            className="absolute -right-6 top-28 bg-white border border-border rounded-xl p-3 shadow-lg w-44"
             initial={{ opacity: 0, x: 20, scale: 0.85 }}
             animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
             transition={{ ...SPRING, delay: 1.4 }}
@@ -321,15 +230,17 @@ function Hero() {
               animate={inView ? { y: [0, -3, 0] } : {}}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 2.5 }}
             >
-              <p className="text-[10px] text-gold font-semibold mb-1">Desbloqueado</p>
-              <p className="text-xs text-neutral-300">Te has ganado una cerveza</p>
-              <p className="text-[10px] text-neutral-600 mt-1">Hace 2 min</p>
+              <div className="flex items-center gap-1.5 mb-1">
+                <Heart className="w-3.5 h-3.5 text-accent fill-accent" />
+                <span className="text-[10px] text-accent font-semibold">12 kudos</span>
+              </div>
+              <p className="text-xs text-gray-700">Tu squad celebra tu racha</p>
             </motion.div>
           </motion.div>
 
           {/* Streak badge */}
           <motion.div
-            className="absolute -left-4 bottom-28 bg-card border border-border rounded-xl p-3 shadow-2xl shadow-black/50"
+            className="absolute -left-4 bottom-28 bg-white border border-border rounded-xl p-3 shadow-lg"
             initial={{ opacity: 0, x: -20, scale: 0.85 }}
             animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
             transition={{ ...SPRING, delay: 1.6 }}
@@ -338,10 +249,53 @@ function Hero() {
               animate={inView ? { y: [0, -3, 0] } : {}}
               transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
             >
-              <p className="text-[10px] text-gold font-semibold">Racha x2</p>
-              <p className="text-xs text-neutral-300 mt-0.5">14 días · Doble puntos</p>
+              <div className="flex items-center gap-1.5">
+                <Flame className="w-3.5 h-3.5 text-accent" />
+                <span className="text-[10px] text-accent font-semibold">14 días</span>
+              </div>
+              <p className="text-xs text-gray-700 mt-0.5">Racha x2 activa</p>
             </motion.div>
           </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+/* ================================================================
+   ACTIVITY TICKER
+   ================================================================ */
+
+function ActivityTicker() {
+  const activities = [
+    'Carlos completó Gym 1h · +50 pts',
+    'María desbloqueó "Monje" — 30 días sin alcohol',
+    'David recibió 8 kudos por su racha',
+    'Laura retó a Pablo · Running semanal',
+    'Ana lleva 30 días de racha · x4 multiplicador',
+    'Los Disciplinados: top 5% global esta semana',
+    '12 personas entraron esta semana por invitación',
+    'Javier completó todos sus hábitos hoy',
+  ]
+
+  return (
+    <section className="py-8 overflow-hidden relative border-y border-border">
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white z-10 pointer-events-none" />
+      <div className="relative">
+        <motion.div
+          className="flex gap-6 whitespace-nowrap"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+        >
+          {[...activities, ...activities].map((n, i) => (
+            <div
+              key={i}
+              className="inline-flex items-center gap-2 text-sm text-muted"
+            >
+              <Zap className="w-3.5 h-3.5 text-accent shrink-0" />
+              {n}
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>
@@ -354,18 +308,18 @@ function Hero() {
 
 function HowItWorks() {
   const steps = [
-    { number: '01', title: 'CURRA', desc: 'Define tus hábitos. Los que quieras: gym, lectura, madrugar, lo que sea tuyo. Cada uno vale monedas.' },
-    { number: '02', title: 'GANA', desc: 'Cumple y acumula. Las rachas multiplican. 7 días seguidos = puntos dobles.' },
-    { number: '03', title: 'GÁSTALO', desc: '¿Cerveza? ¿Netflix? ¿Cheat meal? Si tienes saldo, el vicio es tuyo. Si no, te jodes.' },
+    { icon: Target, title: 'Define tus hábitos', desc: 'Los que quieras: gym, lectura, meditación, skincare, no-fap... lo que sea tuyo. Tú eliges la dificultad y los puntos.' },
+    { icon: Flame, title: 'Gana puntos', desc: 'Cumple y acumula. Las rachas multiplican. 7 días seguidos = puntos dobles. Tu squad recibe cada actividad.' },
+    { icon: Heart, title: 'Recibe kudos', desc: 'Tu squad ve tu progreso y te da kudos. Compite en el ranking, reta a amigos, y gasta tus puntos en lo que quieras.' },
   ]
 
   return (
     <section id="como-funciona" className="py-24 sm:py-32 relative">
       <div className="max-w-6xl mx-auto px-5">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">Así funciona</p>
+          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Así funciona</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Tres pasos. Sin excusas.
+            Tres pasos. Cero excusas.
           </h2>
         </FadeIn>
 
@@ -373,12 +327,14 @@ function HowItWorks() {
           {steps.map((s, i) => (
             <FadeIn key={i} delay={0.1 + i * 0.15}>
               <motion.div
-                className="relative bg-card rounded-2xl p-6 border border-border h-full"
-                whileHover={{ y: -4, borderColor: 'rgba(212,168,67,0.2)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                className="relative bg-white rounded-2xl p-6 border border-border shadow-sm h-full"
+                whileHover={{ y: -4, boxShadow: '0 10px 40px -10px rgba(252,82,0,0.1)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
               >
-                <span className="text-3xl font-extrabold text-gold/30 font-mono mb-3 block">{s.number}</span>
-                <h3 className="text-xl font-extrabold tracking-tight mb-2">{s.title}</h3>
-                <p className="text-sm text-neutral-400 leading-relaxed">{s.desc}</p>
+                <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
+                  <s.icon className="w-5 h-5 text-accent" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">{s.title}</h3>
+                <p className="text-sm text-muted leading-relaxed">{s.desc}</p>
               </motion.div>
             </FadeIn>
           ))}
@@ -389,71 +345,68 @@ function HowItWorks() {
 }
 
 /* ================================================================
-   VICE ECONOMY
+   ECONOMY
    ================================================================ */
 
-function ViceEconomy() {
+function Economy() {
   const earnings = [
-    { name: 'Gym 1h', coins: 80 },
-    { name: 'Leer 30min', coins: 40 },
-    { name: 'Madrugar antes de las 7', coins: 30 },
-    { name: 'Sin alcohol hoy', coins: 25 },
-    { name: 'Meditar 10min', coins: 20 },
-    { name: 'Mascarilla pelo', coins: 15 },
-    { name: 'Lo que tú quieras', coins: '??' },
+    { name: 'Gym 1h', pts: 50 },
+    { name: 'Leer 30min', pts: 30 },
+    { name: 'Madrugar antes de las 7', pts: 50 },
+    { name: 'Sin alcohol hoy', pts: 30 },
+    { name: 'Meditar 10min', pts: 15 },
+    { name: 'Lo que tú quieras', pts: '??' },
   ]
 
-  const expenses = [
-    { name: 'Cheat meal', coins: 150 },
-    { name: 'Cerveza', coins: 100 },
-    { name: 'Netflix binge', coins: 80 },
-    { name: 'Saltarte el gym', coins: 60 },
-    { name: 'Fast food', coins: 120 },
-    { name: 'Tu vicio favorito', coins: '??' },
+  const rewards = [
+    { name: 'Cerveza', pts: 100 },
+    { name: 'Cheat meal', pts: 150 },
+    { name: 'Netflix binge', pts: 80 },
+    { name: 'Dormir hasta tarde', pts: 60 },
+    { name: 'Tu vicio favorito', pts: '??' },
   ]
 
   return (
-    <section className="py-24 sm:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/[0.02] to-transparent pointer-events-none" />
-      <div className="max-w-6xl mx-auto px-5 relative">
+    <section className="py-24 sm:py-32 bg-surface">
+      <div className="max-w-6xl mx-auto px-5">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">La economía del vicio</p>
+          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu economía</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Cada hábito tiene precio.
+            Gana con disciplina.
             <br />
-            <span className="text-neutral-500">Cada vicio también.</span>
+            <span className="text-muted">Gasta en lo que quieras.</span>
           </h2>
         </FadeIn>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Earnings */}
           <FadeIn delay={0.1}>
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <h3 className="font-bold text-base mb-4 text-neutral-300">Ganas</h3>
+            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <TrendingUp className="w-4 h-4 text-success" />
+                <h3 className="font-bold text-base">Ganas</h3>
+              </div>
               <div className="space-y-3">
                 {earnings.map((item, i) => (
                   <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-400">{item.name}</span>
-                    <span className="text-sm font-bold text-gold tabular-nums">
-                      +{item.coins}
-                    </span>
+                    <span className="text-sm text-muted">{item.name}</span>
+                    <span className="text-sm font-bold text-accent tabular-nums">+{item.pts}</span>
                   </div>
                 ))}
               </div>
             </div>
           </FadeIn>
 
-          {/* Expenses */}
           <FadeIn delay={0.25}>
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <h3 className="font-bold text-base mb-4 text-neutral-300">Gastas</h3>
+            <div className="bg-white rounded-2xl border border-border shadow-sm p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <Zap className="w-4 h-4 text-muted" />
+                <h3 className="font-bold text-base">Gastas</h3>
+              </div>
               <div className="space-y-3">
-                {expenses.map((item, i) => (
+                {rewards.map((item, i) => (
                   <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-400">{item.name}</span>
-                    <span className="text-sm font-bold text-neutral-500 tabular-nums">
-                      −{item.coins}
-                    </span>
+                    <span className="text-sm text-muted">{item.name}</span>
+                    <span className="text-sm font-bold text-gray-400 tabular-nums">−{item.pts}</span>
                   </div>
                 ))}
               </div>
@@ -462,15 +415,113 @@ function ViceEconomy() {
         </div>
 
         <FadeIn delay={0.4} className="mt-8 text-center">
-          <div className="inline-flex items-center gap-3 bg-card rounded-full border border-border px-5 py-3">
-            <span className="text-sm text-neutral-400">La matemática es simple:</span>
+          <div className="inline-flex items-center gap-3 bg-white rounded-full border border-border px-5 py-3 shadow-sm">
+            <span className="text-sm text-muted">La matemática es simple:</span>
             <span className="text-sm font-bold">
-              <span className="text-gold">3 gym</span>
+              <span className="text-accent">3 gym</span>
               {' = '}
-              <span className="text-neutral-300">1 cerveza + 1 cheat meal</span>
+              <span className="text-foreground">1 cerveza + 1 cheat meal</span>
             </span>
           </div>
         </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ================================================================
+   FEED PREVIEW
+   ================================================================ */
+
+function FeedPreview() {
+  const activities = [
+    { name: 'Carlos M.', initials: 'CM', action: 'Gym 1h', pts: 50, kudos: 12, time: 'Hace 12 min', streak: 21 },
+    { name: 'María L.', initials: 'ML', action: 'Meditación 15min', pts: 30, kudos: 8, time: 'Hace 45 min' },
+    { name: 'Javier S.', initials: 'JS', action: 'Mascarilla pelo', pts: 15, kudos: 3, time: 'Hace 1h', isYou: true },
+    { name: 'David R.', initials: 'DR', action: 'Leer 30min', pts: 30, kudos: 5, time: 'Hace 2h' },
+  ]
+
+  return (
+    <section className="py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto px-5">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
+            <FadeIn>
+              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Activity feed</p>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
+                Ve lo que hace
+                <br />
+                tu squad.
+                <br />
+                <span className="text-muted">Dale kudos.</span>
+              </h2>
+            </FadeIn>
+
+            <FadeIn delay={0.15}>
+              <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
+                Cada hábito completado aparece en el feed. Tu equipo te ve, te celebra, te motiva.
+                <span className="text-foreground font-medium"> Como Strava, pero para la vida real.</span>
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.3}>
+              <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
+                {[
+                  { icon: Heart, text: 'Kudos con un tap', detail: 'Celebra cada logro de tu equipo' },
+                  { icon: Users, text: 'Feed de tu squad', detail: 'Ve el progreso de todos en tiempo real' },
+                  { icon: Flame, text: 'Rachas visibles', detail: 'Las rachas largas inspiran al grupo' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-start gap-3 text-left">
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <f.icon className="w-4 h-4 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{f.text}</p>
+                      <p className="text-xs text-muted">{f.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Feed mockup */}
+          <FadeIn delay={0.2} className="shrink-0">
+            <div className="w-[320px] bg-white rounded-2xl border border-border shadow-lg p-4 space-y-3">
+              {activities.map((a, i) => (
+                <div key={i} className={`rounded-xl p-3.5 ${a.isYou ? 'bg-accent/[0.05] border border-accent/10' : 'bg-surface'}`}>
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold text-gray-500">
+                      {a.initials}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-gray-900">{a.name}</span>
+                        {a.streak && (
+                          <span className="text-[10px] text-accent font-bold flex items-center gap-0.5">
+                            <Flame className="w-2.5 h-2.5" /> {a.streak}d
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-gray-400">{a.time}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-success" />
+                      <span className="text-sm text-gray-800 font-medium">{a.action}</span>
+                      <span className="text-xs text-accent font-bold">+{a.pts}</span>
+                    </div>
+                    <button className="flex items-center gap-1 text-gray-400 hover:text-accent transition">
+                      <Heart className="w-3.5 h-3.5" />
+                      <span className="text-[10px] font-medium">{a.kudos}</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
       </div>
     </section>
   )
@@ -484,287 +535,93 @@ function Squads() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
-  const ranking = [
-    { pos: 1, name: 'Carlos', coins: 1240, emoji: '🥇', you: false },
-    { pos: 2, name: 'María', coins: 980, emoji: '🥈', you: false },
-    { pos: 3, name: 'Tú', coins: 850, emoji: '🥉', you: true },
-    { pos: 4, name: 'David', coins: 320, emoji: '💀', you: false, last: true },
+  const members = [
+    { pos: 1, name: 'Carlos', pts: 1240, change: 0 },
+    { pos: 2, name: 'María', pts: 980, change: 1 },
+    { pos: 3, name: 'Tú', pts: 850, change: -1, isYou: true },
+    { pos: 4, name: 'David', pts: 320, change: 0, isLast: true },
   ]
 
   return (
-    <section id="squads" className="py-24 sm:py-32 relative" ref={ref}>
+    <section id="squads" className="py-24 sm:py-32 bg-surface" ref={ref}>
       <div className="max-w-6xl mx-auto px-5">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          {/* Mockup */}
-          <motion.div
-            className="relative shrink-0 order-2 lg:order-1"
-            initial={{ opacity: 0, scale: 0.9, x: -40 }}
-            animate={inView ? { opacity: 1, scale: 1, x: 0 } : {}}
-            transition={{ ...SPRING, delay: 0.2 }}
-          >
-            <PhoneFrame>
-              <div className="pt-10 px-4 pb-4 h-full flex flex-col">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-xs text-neutral-500 font-semibold">SQUAD</p>
-                  <div className="flex -space-x-1.5">
-                    {['🧔', '👩', '🧑', '👨'].map((e, i) => (
-                      <div key={i} className="w-5 h-5 rounded-full bg-card border border-[#0c0c0c] text-[8px] flex items-center justify-center">
-                        {e}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <h3 className="text-base font-bold text-white mb-4">Los Disciplinados</h3>
-
-                {/* Ranking */}
-                <div className="space-y-2 flex-1">
-                  {ranking.map((r, i) => (
-                    <motion.div
-                      key={i}
-                      className={`flex items-center justify-between rounded-xl px-3 py-2.5 ${
-                        r.you
-                          ? 'bg-gold/10 border border-gold/20'
-                          : r.last
-                          ? 'bg-red-500/5 border border-red-500/10'
-                          : 'bg-white/[0.03]'
-                      }`}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={inView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ ...SPRING, delay: 0.5 + i * 0.12 }}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-sm">{r.emoji}</span>
-                        <div>
-                          <p className={`text-xs font-semibold ${r.you ? 'text-gold' : 'text-white'}`}>
-                            {r.name}
-                          </p>
-                          {r.last && (
-                            <p className="text-[9px] text-red-400">Paga las cañas 🍻</p>
-                          )}
-                        </div>
-                      </div>
-                      <span className="text-xs font-bold text-neutral-400 flex items-center gap-1">
-                        {r.coins.toLocaleString()} <Coin size={10} />
-                      </span>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Shame notification */}
-                <motion.div
-                  className="mt-4 bg-white/[0.04] rounded-xl p-3 border border-white/[0.06]"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ ...SPRING, delay: 1.1 }}
-                >
-                  <p className="text-[10px] text-red-400 font-semibold mb-0.5">📢 Vergüenza pública</p>
-                  <p className="text-[11px] text-neutral-300">David no ha ido al gym hoy 👀</p>
-                </motion.div>
-
-                {/* Challenge */}
-                <motion.div
-                  className="mt-2 bg-gradient-to-r from-vice/10 to-transparent rounded-xl p-3 border border-vice/20"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ ...SPRING, delay: 1.25 }}
-                >
-                  <p className="text-[10px] text-vice font-semibold mb-0.5">⚔️ Reto semanal</p>
-                  <p className="text-[11px] text-neutral-300">5 gyms esta semana · 2/5 completados</p>
-                </motion.div>
-              </div>
-            </PhoneFrame>
-
-            {/* Floating duel badge */}
-            <motion.div
-              className="absolute -right-4 top-20 bg-card border border-border rounded-xl p-3 shadow-2xl shadow-black/50 w-40"
-              initial={{ opacity: 0, x: 20, scale: 0.85 }}
-              animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
-              transition={{ ...SPRING, delay: 1.4 }}
-            >
-              <motion.div
-                animate={inView ? { y: [0, -3, 0] } : {}}
-                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-              >
-                <p className="text-[10px] text-vice font-semibold">⚔️ Nuevo duelo</p>
-                <p className="text-[11px] text-neutral-300 mt-0.5">Carlos te reta:</p>
-                <p className="text-[10px] text-white font-medium mt-0.5">&quot;¿Quién lee más esta semana?&quot;</p>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
-          {/* Text */}
-          <div className="flex-1 text-center lg:text-left order-1 lg:order-2">
+        <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
             <FadeIn>
-              <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">Squads</p>
+              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Squads</p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Tus amigos son
+                Tu equipo
                 <br />
-                tu mejor excusa.
+                te mantiene
                 <br />
-                <span className="text-neutral-500">Y tu peor pesadilla.</span>
+                <span className="text-muted">en marcha.</span>
               </h2>
             </FadeIn>
 
             <FadeIn delay={0.15}>
-              <p className="mt-6 text-lg text-neutral-400 leading-relaxed max-w-md mx-auto lg:mx-0">
-                Crea un Squad. Compite cada semana. El último paga las cañas.
-                Y si no vas al gym, <span className="text-white font-medium">todo el mundo se entera.</span>
+              <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
+                Crea un squad con tus amigos. Compite cada semana. Daos kudos.
+                <span className="text-foreground font-medium"> El último invita a las cañas.</span>
               </p>
             </FadeIn>
 
-            <div className="mt-8 space-y-4 max-w-md mx-auto lg:mx-0">
+            <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
               {[
-                { text: 'Ranking semanal entre amigos', detail: 'El primero elige castigo del último' },
-                { text: 'Vergüenza pública', detail: 'Si no cumples, tu squad lo sabe' },
-                { text: 'Duelos 1v1', detail: 'Reta a cualquiera. El perdedor paga.' },
-                { text: 'Sin amigos no hay juego', detail: 'Invita o pierde funciones' },
+                { icon: Trophy, text: 'Ranking semanal', detail: 'Compite por el primer puesto cada semana' },
+                { icon: Users, text: 'Duelos 1v1', detail: 'Reta a cualquiera. El perdedor paga.' },
+                { icon: BarChart3, text: 'Progreso compartido', detail: 'Ve las stats de todo tu squad' },
               ].map((f, i) => (
                 <FadeIn key={i} delay={0.3 + i * 0.1}>
                   <div className="flex items-start gap-3 text-left">
-                    <span className="text-gold/40 text-xs font-mono mt-1">—</span>
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <f.icon className="w-4 h-4 text-accent" />
+                    </div>
                     <div>
-                      <p className="text-sm font-semibold text-white">{f.text}</p>
-                      <p className="text-xs text-neutral-500">{f.detail}</p>
+                      <p className="text-sm font-semibold">{f.text}</p>
+                      <p className="text-xs text-muted">{f.detail}</p>
                     </div>
                   </div>
                 </FadeIn>
               ))}
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  )
-}
 
-/* ================================================================
-   WEEKLY RECAP
-   ================================================================ */
-
-function WeeklyRecap() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-
-  return (
-    <section className="py-24 sm:py-32 relative" ref={ref}>
-      <div className="max-w-6xl mx-auto px-5 relative">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          {/* Text */}
-          <div className="flex-1 text-center lg:text-left">
-            <FadeIn>
-              <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">Tu progreso</p>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Los números
-                <br />
-                no mienten.
-              </h2>
-            </FadeIn>
-
-            <FadeIn delay={0.15}>
-              <p className="mt-6 text-lg text-neutral-400 leading-relaxed max-w-md mx-auto lg:mx-0">
-                Cada semana, un resumen de lo que has hecho.
-                <span className="text-white font-medium"> Sin edulcorar. Sin excusas.</span>
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <div className="mt-8 space-y-4 max-w-md mx-auto lg:mx-0">
-                {[
-                  { text: 'Resumen semanal automático', detail: 'Progreso de cada hábito, tendencias y rachas' },
-                  { text: 'Tu balance real', detail: 'Cuánto has ganado, cuánto has gastado, y qué te has ganado' },
-                  { text: 'Histórico completo', detail: 'Semana a semana, ve cómo evoluciona tu disciplina' },
-                ].map((f, i) => (
-                  <div key={i} className="flex items-start gap-3 text-left">
-                    <span className="text-gold/40 text-xs font-mono mt-1">—</span>
-                    <div>
-                      <p className="text-sm font-semibold text-white">{f.text}</p>
-                      <p className="text-xs text-neutral-500">{f.detail}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Recap card mockup (story format) */}
+          {/* Leaderboard mockup */}
           <motion.div
-            className="relative shrink-0"
+            className="shrink-0 w-[300px]"
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.2 }}
           >
-            <div className="w-[260px] bg-gradient-to-b from-[#111] to-[#0a0a0a] rounded-3xl p-5 border border-white/[0.08] shadow-2xl shadow-black/60">
-              {/* Header */}
-              <div className="text-center mb-5">
-                <p className="text-[10px] text-neutral-600 font-mono">DOSIS · WEEKLY RECAP</p>
-                <motion.p
-                  className="text-lg font-extrabold text-white mt-1"
-                  initial={{ opacity: 0 }}
-                  animate={inView ? { opacity: 1 } : {}}
-                  transition={{ delay: 0.5 }}
-                >
-                  SEMANA 14
-                </motion.p>
-                <motion.div
-                  className="inline-flex items-center gap-1.5 bg-gold/10 border border-gold/20 rounded-full px-2.5 py-0.5 mt-2"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={inView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ ...SPRING_SNAPPY, delay: 0.6 }}
-                >
-                  <span className="text-[10px] text-gold font-bold">LVL 23</span>
-                </motion.div>
+            <div className="bg-white rounded-2xl border border-border shadow-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-bold text-gray-900">Los Disciplinados</p>
+                <span className="text-[10px] text-accent font-semibold">Semana 14</span>
               </div>
-
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {[
-                  { label: 'Gym', value: '5/5', color: 'text-gold' },
-                  { label: 'Lectura', value: '4/7', color: 'text-gold' },
-                  { label: 'Sin alcohol', value: '6/7', color: 'text-gold' },
-                  { label: 'Meditación', value: '3/5', color: 'text-neutral-400' },
-                ].map((stat, i) => (
+              <div className="space-y-2">
+                {members.map((m, i) => (
                   <motion.div
                     key={i}
-                    className="bg-white/[0.04] rounded-lg p-2 text-center"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ ...SPRING, delay: 0.7 + i * 0.1 }}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
+                      m.isYou ? 'bg-accent/[0.05] border border-accent/10' : m.isLast ? 'bg-gray-50' : 'bg-gray-50'
+                    }`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.4 + i * 0.08 }}
                   >
-                    <p className={`text-base font-bold ${stat.color}`}>{stat.value}</p>
-                    <p className="text-[9px] text-neutral-500">{stat.label}</p>
+                    <span className="text-xs font-bold text-gray-400 w-4 tabular-nums">{m.pos}</span>
+                    <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-[9px] font-bold text-gray-500">
+                      {m.name[0]}
+                    </div>
+                    <div className="flex-1">
+                      <p className={`text-xs font-semibold ${m.isYou ? 'text-accent' : 'text-gray-900'}`}>{m.name}</p>
+                      {m.isLast && <p className="text-[9px] text-gray-400">Paga las cañas</p>}
+                    </div>
+                    <span className="text-xs font-bold text-gray-500 tabular-nums">{m.pts.toLocaleString()}</span>
                   </motion.div>
                 ))}
               </div>
-
-              {/* Divider */}
-              <div className="h-px bg-white/[0.06] my-4" />
-
-              {/* Balance */}
-              <motion.div
-                className="text-center bg-white/[0.03] rounded-lg p-3 mb-3"
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.1 }}
-              >
-                <p className="text-[10px] text-neutral-500">BALANCE SEMANAL</p>
-                <p className="text-lg font-extrabold text-gold flex items-center justify-center gap-1.5">
-                  +420 <Coin size={14} />
-                </p>
-              </motion.div>
-
-              {/* Trend */}
-              <motion.div
-                className="text-center"
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.3 }}
-              >
-                <p className="text-[10px] text-neutral-600">vs semana anterior</p>
-                <p className="text-xs font-bold text-gold mt-0.5">+12% mejor</p>
-              </motion.div>
             </div>
-
           </motion.div>
         </div>
       </div>
@@ -773,42 +630,97 @@ function WeeklyRecap() {
 }
 
 /* ================================================================
-   SOCIAL PROOF / SHAME BELT
+   PROGRESS
    ================================================================ */
 
-function ShameBelt() {
-  const notifications = [
-    'Carlos completó su 5to gym de la semana',
-    'David lleva 3 días sin entrenar...',
-    'María se ha ganado una cerveza',
-    'Nuevo duelo: Laura vs Pablo · Running semanal',
-    'Ana lleva 30 días de racha · Multiplicador x4',
-    'Los Disciplinados: David último otra vez',
-    '12 personas entraron esta semana por invitación',
-    'Tu squad "Gym Bros" es top 5% global',
-  ]
-
+function Progress() {
   return (
-    <section className="py-16 overflow-hidden relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10 pointer-events-none" />
-      <FadeIn className="text-center mb-8">
-        <p className="text-sm text-neutral-500">Esto está pasando ahora mismo</p>
-      </FadeIn>
-      <div className="relative">
-        <motion.div
-          className="flex gap-4 whitespace-nowrap"
-          animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-        >
-          {[...notifications, ...notifications].map((n, i) => (
-            <div
-              key={i}
-              className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2 text-sm text-neutral-300 shrink-0"
-            >
-              {n}
+    <section className="py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto px-5">
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
+            <FadeIn>
+              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu progreso</p>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
+                Los números
+                <br />
+                <span className="text-muted">no mienten.</span>
+              </h2>
+            </FadeIn>
+
+            <FadeIn delay={0.15}>
+              <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
+                Resumen semanal automático. Tendencias, rachas, puntos.
+                <span className="text-foreground font-medium"> Tu training log personal.</span>
+              </p>
+            </FadeIn>
+
+            <FadeIn delay={0.3}>
+              <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
+                {[
+                  { icon: BarChart3, text: 'Resumen semanal', detail: 'Progreso de cada hábito, tendencias y rachas' },
+                  { icon: TrendingUp, text: 'Tendencias', detail: 'Compara semana a semana, ve tu evolución' },
+                  { icon: Trophy, text: 'Personal records', detail: 'Mejor racha, mejor semana, más puntos en un día' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-start gap-3 text-left">
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <f.icon className="w-4 h-4 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{f.text}</p>
+                      <p className="text-xs text-muted">{f.detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* Stats mockup */}
+          <FadeIn delay={0.2} className="shrink-0">
+            <div className="w-[300px] bg-white rounded-2xl border border-border shadow-lg p-5">
+              <p className="text-xs font-bold text-gray-900 mb-1">Semana 14</p>
+              <p className="text-[10px] text-gray-400 mb-4">vs semana anterior: <span className="text-accent font-bold">+12%</span></p>
+
+              <div className="space-y-3 mb-4">
+                {[
+                  { name: 'Gym', done: 5, total: 5 },
+                  { name: 'Lectura', done: 4, total: 7 },
+                  { name: 'Sin alcohol', done: 6, total: 7 },
+                  { name: 'Meditación', done: 3, total: 5 },
+                ].map((h, i) => (
+                  <div key={i}>
+                    <div className="flex justify-between text-[10px] mb-1">
+                      <span className="text-gray-500">{h.name}</span>
+                      <span className={`font-bold ${h.done === h.total ? 'text-accent' : 'text-gray-700'}`}>
+                        {h.done}/{h.total}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${h.done === h.total ? 'bg-accent' : 'bg-accent/40'}`}
+                        style={{ width: `${(h.done / h.total) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Puntos', value: '+420' },
+                  { label: 'Racha', value: '14d' },
+                  { label: 'Squad', value: '#3' },
+                ].map((s, i) => (
+                  <div key={i} className="bg-gray-50 rounded-lg p-2.5 text-center">
+                    <p className="text-base font-extrabold text-gray-900">{s.value}</p>
+                    <p className="text-[9px] text-gray-400">{s.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </motion.div>
+          </FadeIn>
+        </div>
       </div>
     </section>
   )
@@ -820,58 +732,55 @@ function ShameBelt() {
 
 function InviteSystem() {
   const tiers = [
-    { count: '500', label: 'Founding Members', invites: 10, desc: '10 invitaciones + badge permanente', border: 'border-gold/30' },
-    { count: '2.500', label: 'Nivel 2', invites: 5, desc: '5 invitaciones + gana más siendo disciplinado', border: 'border-border' },
-    { count: '12.500', label: 'Nivel 3', invites: 5, desc: 'Y así sucesivamente. Sin límite.', border: 'border-border' },
+    { count: '500', label: 'Founding Members', invites: 10, border: 'border-accent/30' },
+    { count: '2.500', label: 'Nivel 2', invites: 5, border: 'border-border' },
+    { count: '12.500', label: 'Nivel 3', invites: 5, border: 'border-border' },
   ]
 
   return (
-    <section className="py-24 sm:py-32 relative">
-      <div className="max-w-6xl mx-auto px-5 relative">
+    <section className="py-24 sm:py-32 bg-surface">
+      <div className="max-w-6xl mx-auto px-5">
         <FadeIn className="text-center mb-16">
-          <p className="text-sm text-gold font-semibold uppercase tracking-widest mb-3">El sistema</p>
+          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Solo por invitación</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
             Cada invitación es un privilegio.
             <br />
-            <span className="text-neutral-500">No un enlace genérico.</span>
+            <span className="text-muted">No un enlace genérico.</span>
           </h2>
         </FadeIn>
 
-        {/* Growth visualization */}
         <div className="max-w-2xl mx-auto mb-12">
           <div className="flex items-center justify-between relative">
             <div className="absolute top-1/2 left-0 right-0 h-px bg-border -translate-y-1/2" />
             {tiers.map((tier, i) => (
               <FadeIn key={i} delay={0.1 + i * 0.15} className="relative">
-                <div className={`bg-card border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44`}>
-                  <p className="text-xl font-extrabold text-white">{tier.count}</p>
-                  <p className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider">{tier.label}</p>
-                  <p className="text-[10px] text-neutral-500 mt-1.5 leading-relaxed">{tier.desc}</p>
+                <div className={`bg-white border ${tier.border} rounded-2xl p-4 text-center w-36 sm:w-44 shadow-sm`}>
+                  <p className="text-xl font-extrabold">{tier.count}</p>
+                  <p className="text-[10px] text-muted font-semibold uppercase tracking-wider">{tier.label}</p>
+                  <p className="text-[10px] text-accent font-bold mt-1">{tier.invites} invitaciones</p>
                 </div>
               </FadeIn>
             ))}
           </div>
         </div>
 
-        {/* Earn more invites */}
         <FadeIn delay={0.4}>
-          <div className="bg-card border border-border rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 className="text-base font-bold text-white mb-4 text-center">Gana más invitaciones</h3>
+          <div className="bg-white border border-border rounded-2xl p-6 max-w-2xl mx-auto shadow-sm">
+            <h3 className="text-base font-bold mb-4 text-center">Gana más invitaciones</h3>
             <div className="grid sm:grid-cols-3 gap-4">
               {[
                 { action: 'Racha de 30 días', reward: '+2 invitaciones' },
                 { action: 'Ganar 3 duelos', reward: '+1 invitación' },
                 { action: 'Squad en top 10%', reward: '+1 para todos' },
               ].map((item, i) => (
-                <div key={i} className="text-center bg-white/[0.02] rounded-xl p-3">
-                  <p className="text-xs text-white font-medium">{item.action}</p>
-                  <p className="text-[10px] text-gold font-bold mt-0.5">{item.reward}</p>
+                <div key={i} className="text-center bg-surface rounded-xl p-3">
+                  <p className="text-xs font-medium">{item.action}</p>
+                  <p className="text-[10px] text-accent font-bold mt-0.5">{item.reward}</p>
                 </div>
               ))}
             </div>
           </div>
         </FadeIn>
-
       </div>
     </section>
   )
@@ -883,44 +792,33 @@ function InviteSystem() {
 
 function WhyItWorks() {
   const reasons = [
-    {
-      title: 'La vergüenza funciona mejor que la motivación',
-      desc: 'Puedes ignorar una notificación. No puedes ignorar a tu squad viéndote fallar.',
-    },
-    {
-      title: 'Los vicios son la zanahoria perfecta',
-      desc: 'No te levantas a las 6 por "salud". Te levantas porque quieres esa cerveza el viernes.',
-    },
-    {
-      title: 'La competición es adictiva',
-      desc: 'Ver a Carlos por encima tuyo en el ranking duele. Y eso te mueve el culo.',
-    },
-    {
-      title: '5 invitaciones. Ni una más.',
-      desc: 'No puedes entrar si nadie te invita. Y cada persona solo tiene 5. Eso convierte cada invitación en oro.',
-    },
+    { title: 'Los kudos son adictivos', desc: 'Ver a tu equipo celebrar tu esfuerzo genera un loop que te mantiene volviendo.' },
+    { title: 'La competición sana motiva', desc: 'Ver a Carlos por encima tuyo en el ranking. Eso es lo que te saca del sofá.' },
+    { title: 'Los vicios son tu zanahoria', desc: 'No madrugas por "salud". Madrugas porque quieres esa cerveza del viernes.' },
+    { title: '5 invitaciones. Ni una más.', desc: 'Cada persona solo tiene 5. Eso convierte cada invitación en algo valioso.' },
   ]
 
   return (
     <section className="py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-5">
         <FadeIn className="text-center mb-16">
+          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Por qué funciona</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Por qué funciona
+            La ciencia de la disciplina,
             <br />
-            <span className="text-neutral-500">(cuando todo lo demás falla)</span>
+            <span className="text-muted">gamificada.</span>
           </h2>
         </FadeIn>
 
         <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {reasons.map((r, i) => (
-            <FadeIn key={i} delay={0.1 + i * 0.1}>
+            <FadeIn key={i} delay={i * 0.1}>
               <motion.div
-                className="bg-card rounded-2xl border border-border p-6 h-full"
-                whileHover={{ y: -4, borderColor: 'rgba(212,168,67,0.15)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
+                className="bg-white rounded-2xl border border-border shadow-sm p-6 h-full"
+                whileHover={{ y: -4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
               >
-                <h3 className="text-base font-bold text-white mb-2">{r.title}</h3>
-                <p className="text-sm text-neutral-400 leading-relaxed">{r.desc}</p>
+                <h3 className="text-base font-bold mb-2">{r.title}</h3>
+                <p className="text-sm text-muted leading-relaxed">{r.desc}</p>
               </motion.div>
             </FadeIn>
           ))}
@@ -936,20 +834,20 @@ function WhyItWorks() {
 
 function Numbers() {
   return (
-    <section className="py-16">
+    <section className="py-16 bg-surface border-y border-border">
       <div className="max-w-4xl mx-auto px-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { value: 4847, label: 'Personas dentro', suffix: '' },
             { value: 5, label: 'Invitaciones por persona', suffix: '' },
-            { value: 87, label: 'Usan 3+ de sus 5 invites', suffix: '%' },
-            { value: 3, label: 'Niveles de profundidad media', suffix: '.4' },
+            { value: 87, label: 'Usan 3+ invites', suffix: '%' },
+            { value: 14, label: 'Días racha media', suffix: '' },
           ].map((stat, i) => (
             <FadeIn key={i} delay={i * 0.1}>
-              <p className="text-3xl sm:text-4xl font-extrabold text-white">
+              <p className="text-3xl sm:text-4xl font-extrabold">
                 <CountUp target={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs text-neutral-500 mt-1">{stat.label}</p>
+              <p className="text-xs text-muted mt-1">{stat.label}</p>
             </FadeIn>
           ))}
         </div>
@@ -964,42 +862,30 @@ function Numbers() {
 
 function InviteCTA() {
   return (
-    <section id="waitlist" className="py-24 sm:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gold/[0.03] to-transparent pointer-events-none" />
-      <div className="max-w-3xl mx-auto px-5 text-center relative">
+    <section id="join" className="py-24 sm:py-32 relative">
+      <div className="max-w-3xl mx-auto px-5 text-center">
         <FadeIn>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold/20 bg-gold/[0.05] text-xs text-gold font-semibold mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface text-xs text-muted font-semibold mb-6">
             Solo por invitación
           </div>
           <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
-            NO PUEDES ENTRAR.
+            ¿Tienes lo que hay que tener?
           </h2>
-          <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] mt-2">
-            <span className="text-neutral-500">A no ser que alguien crea</span>
-          </h2>
-          <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] mt-2">
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 bg-clip-text text-transparent">
-              que te lo mereces.
-            </span>
-          </h2>
-        </FadeIn>
-
-        <FadeIn delay={0.15}>
-          <p className="mt-8 text-lg text-neutral-400 max-w-lg mx-auto leading-relaxed">
-            Cada persona dentro tiene <span className="text-white font-semibold">5 invitaciones</span>. Solo 5.
+          <p className="mt-6 text-lg text-muted max-w-lg mx-auto leading-relaxed">
+            Cada persona dentro tiene <span className="text-foreground font-semibold">5 invitaciones</span>. Solo 5.
             <br />
-            Elige bien a quién metes. No hay segunda oportunidad.
+            Si alguien cree que encajas, te dará una.
           </p>
         </FadeIn>
 
         <FadeIn delay={0.3}>
           <a
             href="/access"
-            className="inline-block mt-10 px-10 py-4 rounded-xl bg-gold text-black font-bold text-lg hover:bg-gold-light transition hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 mt-10 px-10 py-4 rounded-full bg-accent text-white font-bold text-lg hover:bg-accent-light transition hover:scale-[1.02] active:scale-[0.98]"
           >
-            Tengo una invitación →
+            Tengo una invitación <ArrowRight className="w-5 h-5" />
           </a>
-          <p className="mt-4 text-sm text-neutral-600">
+          <p className="mt-4 text-sm text-muted">
             ¿No tienes? Consigue que alguien te invite.
           </p>
         </FadeIn>
@@ -1014,34 +900,32 @@ function InviteCTA() {
 
 function Footer() {
   return (
-    <footer className="py-12 border-t border-white/[0.05]">
+    <footer className="border-t border-border py-12">
       <div className="max-w-6xl mx-auto px-5">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
-            <span className="text-sm font-extrabold tracking-tighter">
-              <span className="text-gold">D</span>OSIS
-            </span>
-            <span className="text-xs text-neutral-600">Solo por invitación.</span>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <Logo size="sm" />
+            <p className="text-xs text-muted mt-1">Cada hábito cuenta.</p>
           </div>
           <div className="flex items-center gap-4">
             {[
-              { name: 'Twitter', icon: '𝕏' },
-              { name: 'Instagram', icon: 'IG' },
-              { name: 'TikTok', icon: 'TT' },
+              { name: 'Twitter', label: '𝕏' },
+              { name: 'Instagram', label: 'IG' },
+              { name: 'TikTok', label: 'TT' },
             ].map((s) => (
               <a
                 key={s.name}
                 href="#"
-                className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center text-xs font-bold text-neutral-500 hover:text-white hover:border-gold/20 transition"
+                className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-bold text-muted hover:text-accent hover:border-accent/20 transition"
                 aria-label={s.name}
               >
-                {s.icon}
+                {s.label}
               </a>
             ))}
           </div>
         </div>
-        <p className="text-center text-[11px] text-neutral-700 mt-8">
-          © 2026 DOSIS. Todos los derechos reservados. · La disciplina es el nuevo lujo.
+        <p className="text-center text-[11px] text-muted mt-8">
+          © 2026 GRINTA. Todos los derechos reservados.
         </p>
       </div>
     </footer>
@@ -1057,11 +941,12 @@ export default function Home() {
     <main className="overflow-x-hidden">
       <Navbar />
       <Hero />
+      <ActivityTicker />
       <HowItWorks />
-      <ViceEconomy />
-      <ShameBelt />
+      <Economy />
+      <FeedPreview />
       <Squads />
-      <WeeklyRecap />
+      <Progress />
       <InviteSystem />
       <WhyItWorks />
       <Numbers />
