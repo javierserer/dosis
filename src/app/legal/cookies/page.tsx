@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { Logo } from '@/components/shared'
+import { CookieDeclaration } from '@/components/cookiebot'
 
 export default function CookiesPage() {
   return (
@@ -16,7 +17,9 @@ export default function CookiesPage() {
         <h1 className="text-2xl font-bold mb-2">Política de Cookies</h1>
         <p className="text-xs text-muted mb-8">Última actualización: 9 de abril de 2026</p>
 
-        <div className="prose-nivel">
+        <CookieDeclaration />
+
+        <div className="prose-nivel mt-8">
           <h2>1. ¿Qué son las cookies?</h2>
           <p>Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas una web o utilizas una aplicación. Permiten recordar tus preferencias y mantener tu sesión activa.</p>
 
