@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FadeIn, CountUp, Logo, SPRING } from '@/components/shared'
+import { FadeIn, Logo, SPRING } from '@/components/shared'
+import { WeeklyShareCard } from '@/components/charts'
 import {
   Flame, Heart, Target, BarChart3, Trophy,
-  Check, ArrowRight, Zap, TrendingUp, Swords,
+  Check, ArrowRight, Zap, Swords, Share2,
 } from 'lucide-react'
 
 /* ================================================================
@@ -132,9 +133,9 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.35 }}
           >
-            Tus hábitos, tus puntos, tu squad.
+            Trackea hábitos. Gana puntos. Compite con tu squad.
             <br className="hidden sm:block" />{' '}
-            <span className="text-foreground font-medium">La app de hábitos que engancha.</span>
+            <span className="text-foreground font-medium">Como Strava, pero para todo lo que te hace mejor.</span>
           </motion.p>
 
           <motion.div
@@ -406,42 +407,37 @@ function HowItWorks() {
 }
 
 /* ================================================================
-   PROGRESS PREVIEW (replaces old FeedPreview — shows charts)
+   SHARE YOUR WEEK — the viral moment (replaces ProgressPreview)
    ================================================================ */
 
-function ProgressPreview() {
-  const weekData = [65, 80, 45, 90, 95, 30, 15]
-  const trendData = [180, 320, 290, 450, 380, 420]
-  const labels = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
-  const max = Math.max(...weekData)
-
+function ShareYourWeek() {
   return (
     <section className="py-24 sm:py-32 bg-surface">
       <div className="max-w-6xl mx-auto px-5">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <div className="flex-1 text-center lg:text-left">
             <FadeIn>
-              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu progreso</p>
+              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Tu momento</p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Los números
+                Comparte tu
                 <br />
-                <span className="text-muted">no mienten.</span>
+                <span className="text-muted">semana.</span>
               </h2>
             </FadeIn>
 
             <FadeIn delay={0.15}>
               <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
-                Gráficos semanales, heatmap de actividad, tendencias y personal bests.
-                <span className="text-foreground font-medium"> Tu training log personal.</span>
+                Cada domingo recibes tu card semanal: nivel, racha, puntos y tu posición en el squad.
+                <span className="text-foreground font-medium"> Hecha para compartir en stories.</span>
               </p>
             </FadeIn>
 
             <FadeIn delay={0.3}>
               <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
                 {[
-                  { icon: BarChart3, text: 'Puntos por día', detail: 'Ve tu actividad como barras de L a D' },
-                  { icon: TrendingUp, text: 'Tendencias semanales', detail: 'Tu curva de progreso semana a semana' },
-                  { icon: Flame, text: 'Streak heatmap', detail: 'Cuadrícula GitHub-style de tus días activos' },
+                  { icon: Share2, text: 'Un toque para compartir', detail: 'Instagram, Twitter, WhatsApp. Tu card, tu progreso.' },
+                  { icon: BarChart3, text: 'Tu progreso visual', detail: 'Puntos por día, nivel, racha y posición en el squad.' },
+                  { icon: Heart, text: 'Kudos de tu squad', detail: 'Cada like de tu equipo aparece. Social proof real.' },
                 ].map((f, i) => (
                   <div key={i} className="flex items-start gap-3 text-left">
                     <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -457,101 +453,21 @@ function ProgressPreview() {
             </FadeIn>
           </div>
 
-          {/* Charts mockup */}
           <FadeIn delay={0.2} className="shrink-0">
-            <div className="w-[320px] space-y-3">
-              {/* Weekly bars card */}
-              <div className="bg-white rounded-2xl border border-border shadow-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Esta semana</p>
-                  <span className="text-[10px] text-accent font-bold">+420 pts</span>
-                </div>
-                <div className="flex items-end justify-between gap-2 h-20">
-                  {weekData.map((v, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1 flex-1">
-                      <span className="text-[8px] font-bold text-gray-400 tabular-nums">{v > 0 ? v : ''}</span>
-                      <FadeIn delay={0.4 + i * 0.06}>
-                        <div
-                          className={`w-full rounded-md ${v === 0 ? 'bg-gray-100' : i === 4 ? 'bg-accent' : 'bg-accent/40'}`}
-                          style={{ height: Math.max((v / max) * 56, 3), minWidth: 24 }}
-                        />
-                      </FadeIn>
-                      <span className={`text-[8px] font-semibold ${i === 4 ? 'text-accent' : 'text-gray-400'}`}>{labels[i]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Trend line card */}
-              <div className="bg-white rounded-2xl border border-border shadow-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Tendencia</p>
-                  <span className="text-[10px] text-accent font-bold">+133%</span>
-                </div>
-                <StaticTrendLine data={trendData} />
-              </div>
-
-              {/* Heatmap card */}
-              <div className="bg-white rounded-2xl border border-border shadow-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">Actividad</p>
-                  <span className="text-[10px] text-accent font-bold flex items-center gap-0.5">
-                    <Flame className="w-2.5 h-2.5" /> 14d racha
-                  </span>
-                </div>
-                <HomepageHeatmap />
-              </div>
+            <div className="relative">
+              <WeeklyShareCard animated compact={false} />
+              <motion.div
+                className="absolute -bottom-3 -right-3 bg-accent text-white rounded-full p-3 shadow-xl shadow-accent/30"
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Share2 className="w-5 h-5" />
+              </motion.div>
             </div>
           </FadeIn>
         </div>
       </div>
     </section>
-  )
-}
-
-function StaticTrendLine({ data }: { data: number[] }) {
-  const w = 280; const h = 70
-  const pad = 8
-  const cw = w - pad * 2; const ch = h - pad * 2
-  const max = Math.max(...data); const min = Math.min(...data); const range = max - min || 1
-  const pts = data.map((v, i) => ({
-    x: pad + (i / (data.length - 1)) * cw,
-    y: pad + ch - ((v - min) / range) * ch,
-  }))
-  const d = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
-  const area = `${d} L ${pts[pts.length - 1].x} ${h - pad} L ${pts[0].x} ${h - pad} Z`
-
-  return (
-    <svg width={w} height={h}>
-      <defs>
-        <linearGradient id="homeFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#FC5200" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#FC5200" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#homeFill)" />
-      <path d={d} fill="none" stroke="#FC5200" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-      {pts.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r={2.5} fill="white" stroke="#FC5200" strokeWidth={1.5} />
-      ))}
-    </svg>
-  )
-}
-
-function HomepageHeatmap() {
-  const pattern = [0,80,100,60,0,90,70,100,50,0,80,100,100,60,0,0,30,90,100,80,70,100,50,0,80,100,90,60,100,80,0,90,100,70,50,80,90,0,60,100,100,80,70,100,50,0,90,100,80,60,0,100,90,70,100,0]
-  return (
-    <div className="flex gap-[2px]">
-      {Array.from({ length: 8 }).map((_, w) => (
-        <div key={w} className="flex flex-col gap-[2px]">
-          {Array.from({ length: 7 }).map((_, d) => {
-            const v = pattern[w * 7 + d] ?? 0
-            const bg = v === 0 ? 'bg-gray-100' : v <= 50 ? 'bg-accent/25' : v <= 80 ? 'bg-accent/50' : 'bg-accent'
-            return <div key={d} className={`w-[7px] h-[7px] rounded-[1px] ${bg}`} />
-          })}
-        </div>
-      ))}
-    </div>
   )
 }
 
@@ -657,79 +573,6 @@ function Squads() {
 }
 
 /* ================================================================
-   WHY IT WORKS
-   ================================================================ */
-
-function WhyItWorks() {
-  const reasons = [
-    { icon: Heart, title: 'Los kudos enganchan', desc: 'Ver a tu squad celebrar tu esfuerzo crea un loop que te hace volver cada día.' },
-    { icon: Trophy, title: 'Nadie quiere ser el último', desc: 'El ranking semanal te empuja. Ver a Carlos por encima tuya te saca del sofá.' },
-    { icon: Flame, title: 'Las rachas multiplican', desc: '7 días = x2 puntos. 30 días = x4. Romper la racha duele. Eso funciona.' },
-    { icon: Target, title: 'Tus hábitos, tus reglas', desc: 'No hay plantillas. Tú decides qué trackear y cuánto vale cada hábito.' },
-  ]
-
-  return (
-    <section className="py-24 sm:py-32 bg-surface">
-      <div className="max-w-6xl mx-auto px-5">
-        <FadeIn className="text-center mb-16">
-          <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Por qué funciona</p>
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            No es fuerza de voluntad.
-            <br />
-            <span className="text-muted">Es diseño.</span>
-          </h2>
-        </FadeIn>
-
-        <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {reasons.map((r, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <motion.div
-                className="bg-white rounded-2xl border border-border shadow-sm p-6 h-full"
-                whileHover={{ y: -4, boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08)', transition: { type: 'spring', stiffness: 300, damping: 20 } }}
-              >
-                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center mb-3">
-                  <r.icon className="w-4 h-4 text-accent" />
-                </div>
-                <h3 className="text-base font-bold mb-2">{r.title}</h3>
-                <p className="text-sm text-muted leading-relaxed">{r.desc}</p>
-              </motion.div>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
-   NUMBERS
-   ================================================================ */
-
-function Numbers() {
-  return (
-    <section className="py-16 border-y border-border">
-      <div className="max-w-4xl mx-auto px-5">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {[
-            { value: 4847, label: 'Personas dentro', suffix: '' },
-            { value: 92, label: 'Completan a diario', suffix: '%' },
-            { value: 14, label: 'Días de racha media', suffix: '' },
-            { value: 3, label: 'Hábitos activos de media', suffix: '' },
-          ].map((stat, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <p className="text-3xl sm:text-4xl font-extrabold">
-                <CountUp target={stat.value} suffix={stat.suffix} />
-              </p>
-              <p className="text-xs text-muted mt-1">{stat.label}</p>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
    INVITE CTA
    ================================================================ */
 
@@ -800,7 +643,7 @@ function Footer() {
 }
 
 /* ================================================================
-   PAGE
+   PAGE — simplified: 5 body sections instead of 8
    ================================================================ */
 
 export default function Home() {
@@ -810,10 +653,8 @@ export default function Home() {
       <Hero />
       <ActivityTicker />
       <HowItWorks />
-      <ProgressPreview />
+      <ShareYourWeek />
       <Squads />
-      <WhyItWorks />
-      <Numbers />
       <InviteCTA />
       <Footer />
     </main>

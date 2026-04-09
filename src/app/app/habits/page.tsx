@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X, Flame, Target } from 'lucide-react'
+import { Plus, X, Flame, Target, TrendingUp } from 'lucide-react'
 import { MiniHeatmap } from '@/components/charts'
 
 interface Habit {
@@ -176,7 +176,7 @@ export default function HabitsPage() {
       </div>
 
       {inactiveHabits.length > 0 && (
-        <div className="mb-8">
+        <div className="mb-6">
           <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-3">Pausados</p>
           <div className="space-y-2">
             {inactiveHabits.map((h) => (
@@ -197,6 +197,42 @@ export default function HabitsPage() {
           </div>
         </div>
       )}
+
+      {/* Populares — inspiración */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <TrendingUp className="w-3.5 h-3.5 text-accent" />
+          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest">Populares en NIVEL</p>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+          {[
+            { name: 'Cold shower', diff: 'Bestia', pts: 80, users: '1.2k' },
+            { name: 'Journaling', diff: 'Normal', pts: 30, users: '980' },
+            { name: 'No pantallas antes de dormir', diff: 'Normal', pts: 30, users: '870' },
+            { name: 'Caminar 10k pasos', diff: 'Difícil', pts: 50, users: '2.1k' },
+            { name: 'Ayuno 16h', diff: 'Bestia', pts: 80, users: '640' },
+            { name: 'Estiramientos', diff: 'Fácil', pts: 15, users: '1.5k' },
+          ].map((p, i) => (
+            <motion.button
+              key={i}
+              className="shrink-0 w-[140px] bg-white border border-border rounded-xl p-3 text-left shadow-sm hover:border-accent/20 transition"
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setNewName(p.name)
+                setShowAdd(true)
+              }}
+            >
+              <p className="text-xs font-semibold truncate mb-1">{p.name}</p>
+              <div className="flex items-center gap-1.5 text-[10px] text-muted">
+                <span className="text-accent font-bold">+{p.pts}</span>
+                <span>·</span>
+                <span>{p.diff}</span>
+              </div>
+              <p className="text-[9px] text-gray-400 mt-1">{p.users} personas</p>
+            </motion.button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

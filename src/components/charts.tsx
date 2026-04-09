@@ -294,6 +294,107 @@ export function ComparisonBars({ members }: ComparisonBarsProps) {
 }
 
 /* ================================================================
+   WEEKLY SHARE CARD — The viral shareable element
+   ================================================================ */
+
+interface WeeklyShareCardProps {
+  week?: number
+  level?: number
+  streak?: number
+  pts?: number
+  pct?: number
+  squadName?: string
+  squadPos?: number
+  dailyPts?: number[]
+  animated?: boolean
+  compact?: boolean
+}
+
+export function WeeklyShareCard({
+  week = 14,
+  level = 12,
+  streak = 14,
+  pts = 420,
+  pct = 74,
+  squadName = 'Los Disciplinados',
+  squadPos = 3,
+  dailyPts = [65, 80, 45, 90, 95, 30, 15],
+  animated = true,
+  compact = false,
+}: WeeklyShareCardProps) {
+  const max = Math.max(...dailyPts, 1)
+  const labels = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
+  const Wrapper = animated ? motion.div : 'div'
+  const wrapProps = animated
+    ? { initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 }, transition: SPRING }
+    : {}
+
+  return (
+    <Wrapper
+      className={`bg-white rounded-2xl border border-border shadow-xl overflow-hidden ${compact ? 'w-[240px]' : 'w-[300px]'}`}
+      {...wrapProps}
+    >
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-5 py-4 text-white">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-extrabold tracking-tight">
+            <span className="text-accent">N</span>IVEL
+          </span>
+          <span className="text-[10px] text-gray-400 font-medium">Semana {week}</span>
+        </div>
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-3xl font-extrabold text-accent">{level}</span>
+          <span className="text-xs text-gray-400">nivel</span>
+        </div>
+        <div className="flex items-center gap-3 text-[11px]">
+          <span className="text-accent font-bold">🔥 {streak}d</span>
+          <span className="text-gray-400">·</span>
+          <span className="text-white font-semibold">+{pts} pts</span>
+          <span className="text-gray-400">·</span>
+          <span className="text-gray-300">{pct}%</span>
+        </div>
+      </div>
+
+      <div className="px-5 py-4">
+        <div className="flex items-end justify-between gap-1.5 h-12 mb-1">
+          {dailyPts.map((v, i) => {
+            const h = Math.max((v / max) * 44, 2)
+            const best = v === Math.max(...dailyPts) && v > 0
+            return (
+              <div key={i} className="flex flex-col items-center gap-1 flex-1">
+                {animated ? (
+                  <motion.div
+                    className={`w-full rounded-sm ${v === 0 ? 'bg-gray-100' : best ? 'bg-accent' : 'bg-accent/35'}`}
+                    initial={{ height: 2 }}
+                    animate={{ height: h }}
+                    transition={{ delay: 0.3 + i * 0.05, duration: 0.4 }}
+                  />
+                ) : (
+                  <div
+                    className={`w-full rounded-sm ${v === 0 ? 'bg-gray-100' : best ? 'bg-accent' : 'bg-accent/35'}`}
+                    style={{ height: h }}
+                  />
+                )}
+                <span className={`text-[8px] font-semibold ${best ? 'text-accent' : 'text-gray-400'}`}>{labels[i]}</span>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center">
+              <span className="text-[8px] text-accent font-bold">#{squadPos}</span>
+            </div>
+            <span className="text-[10px] text-muted font-medium">{squadName}</span>
+          </div>
+          <span className="text-[9px] text-gray-400 font-medium">nivel.app</span>
+        </div>
+      </div>
+    </Wrapper>
+  )
+}
+
+/* ================================================================
    HELPERS
    ================================================================ */
 

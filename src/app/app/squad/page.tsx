@@ -81,34 +81,55 @@ export default function SquadPage() {
             </div>
 
             <div className="space-y-2">
-              {MEMBERS.map((m, i) => (
-                <motion.div
-                  key={i}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3.5 border shadow-sm ${
-                    m.isYou ? 'bg-accent/[0.04] border-accent/15' : m.isLast ? 'bg-white border-border' : 'bg-white border-border'
-                  }`}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <span className="text-xs font-bold text-muted w-4 text-center tabular-nums">{m.pos}</span>
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">
-                    {m.initials}
+              {MEMBERS.map((m, i) => {
+                const youMember = MEMBERS.find((x) => x.isYou)
+                const above = i > 0 ? MEMBERS[i - 1] : null
+                const diff = youMember && m.isYou && above ? above.pts - youMember.pts : 0
+
+                return (
+                  <div key={i}>
+                    <motion.div
+                      className={`flex items-center gap-3 rounded-xl px-4 py-3.5 border shadow-sm ${
+                        m.isYou ? 'bg-accent/[0.04] border-accent/15' : m.isLast ? 'bg-white border-border' : 'bg-white border-border'
+                      }`}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                    >
+                      <span className="text-xs font-bold text-muted w-4 text-center tabular-nums">{m.pos}</span>
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">
+                        {m.initials}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <p className={`text-sm font-semibold ${m.isYou ? 'text-accent' : ''}`}>{m.name}</p>
+                          {m.change !== 0 && (
+                            <span className={`text-[10px] font-bold ${m.change > 0 ? 'text-success' : 'text-muted'}`}>
+                              {m.change > 0 ? '↑' : '↓'}
+                            </span>
+                          )}
+                        </div>
+                        {m.isLast && <p className="text-[10px] text-muted">Invita a las cañas</p>}
+                      </div>
+                      <span className="text-sm font-bold text-muted tabular-nums">{m.pts.toLocaleString()}</span>
+                    </motion.div>
+
+                    {m.isYou && diff > 0 && above && (
+                      <motion.div
+                        className="flex items-center gap-2 bg-accent/[0.06] rounded-lg px-4 py-2 mt-1"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <Flame className="w-3 h-3 text-accent shrink-0" />
+                        <p className="text-[11px] text-accent font-medium">
+                          A {diff} pts de {above.name}. Una sesión de gym y le adelantas.
+                        </p>
+                      </motion.div>
+                    )}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <p className={`text-sm font-semibold ${m.isYou ? 'text-accent' : ''}`}>{m.name}</p>
-                      {m.change !== 0 && (
-                        <span className={`text-[10px] font-bold ${m.change > 0 ? 'text-success' : 'text-muted'}`}>
-                          {m.change > 0 ? '↑' : '↓'}
-                        </span>
-                      )}
-                    </div>
-                    {m.isLast && <p className="text-[10px] text-muted">Invita a las cañas</p>}
-                  </div>
-                  <span className="text-sm font-bold text-muted tabular-nums">{m.pts.toLocaleString()}</span>
-                </motion.div>
-              ))}
+                )
+              })}
             </div>
 
             <div className="bg-white border border-border rounded-xl p-4 mt-4 shadow-sm">

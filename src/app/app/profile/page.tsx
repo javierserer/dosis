@@ -23,7 +23,7 @@ const ACHIEVEMENTS = [
   { name: 'Monje', desc: '30 días sin alcohol', unlocked: false, progress: 21 },
   { name: 'Duelista', desc: 'Gana 10 duelos', unlocked: true },
   { name: 'Madrugador', desc: '21 días levantándote antes de las 7', unlocked: false, progress: 14 },
-  { name: 'Sin deuda', desc: 'Nunca en saldo negativo 4 semanas', unlocked: true },
+  { name: 'Constante', desc: 'Completa al menos 1 hábito durante 60 días', unlocked: true },
 ]
 
 export default function ProfilePage() {
@@ -47,7 +47,7 @@ export default function ProfilePage() {
           <p className="text-xs text-muted">@javier · Desde feb 2026</p>
           <div className="flex items-center gap-2 mt-1.5">
             <span className="text-xs text-accent font-bold bg-accent/10 rounded-full px-2.5 py-0.5">
-              LVL 23
+              LVL 12
             </span>
             <span className="text-xs text-muted font-bold flex items-center gap-0.5">
               <Flame className="w-3 h-3 text-accent" /> 14d
@@ -64,7 +64,7 @@ export default function ProfilePage() {
         transition={SPRING}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted">Progreso a LVL 24</span>
+          <span className="text-xs text-muted">Progreso a LVL 13</span>
           <span className="text-xs text-accent font-bold">{xpProgress}%</span>
         </div>
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">

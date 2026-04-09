@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Logo } from '@/components/shared'
-import { StreakHeatmap, WeeklyBars } from '@/components/charts'
 import { Heart, Flame, Check, ChevronRight, TrendingUp } from 'lucide-react'
 
 const INITIAL_HABITS = [
@@ -19,13 +18,6 @@ const FEED = [
   { name: 'Carlos M.', action: 'Gym 1h', pts: 50, time: 'Hace 12min', kudos: 8, streak: 21 },
   { name: 'María L.', action: 'Meditación 15min', pts: 30, time: 'Hace 45min', kudos: 5 },
   { name: 'David R.', action: 'Leer 30min', pts: 30, time: 'Hace 2h', kudos: 3 },
-]
-
-const MOTIVATIONAL = [
-  'Te quedan {remaining} para el día perfecto',
-  '¡{completed} de {total} hoy! No pares',
-  'Tu squad te está mirando',
-  'Racha de 14 días. No la rompas hoy.',
 ]
 
 export default function Dashboard() {
@@ -67,7 +59,7 @@ export default function Dashboard() {
   return (
     <div className="pt-14 px-5">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-5">
         <div>
           <p className="text-xs text-muted mb-0.5">Buenos días</p>
           <h1 className="text-xl font-bold">Javier</h1>
@@ -81,49 +73,41 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Level + XP */}
+      {/* Compact Level + XP */}
       <motion.div
-        className="bg-white rounded-2xl p-5 border border-border shadow-sm mb-4 relative overflow-hidden"
+        className="bg-white rounded-xl px-4 py-3 border border-border shadow-sm mb-3 relative overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 80, damping: 18 }}
       >
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <p className="text-[10px] text-muted font-semibold uppercase tracking-widest">Tu nivel</p>
-            <div className="flex items-baseline gap-1.5 mt-1">
-              <span className="text-4xl font-extrabold text-accent">{level}</span>
-              <span className="text-sm text-muted font-medium">nivel</span>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl font-extrabold text-accent">{level}</span>
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] text-muted">Nivel {level + 1}</span>
+              <span className="text-[10px] text-muted tabular-nums">{xp.toLocaleString()} / {xpNeeded.toLocaleString()} XP</span>
+            </div>
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-accent rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${(xp / xpNeeded) * 100}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+              />
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-[10px] text-muted">Hoy</p>
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-accent" />
-              <span className="text-sm font-bold text-accent">+{todayEarned} pts</span>
-            </div>
+          <div className="flex items-center gap-1 pl-2 border-l border-border">
+            <TrendingUp className="w-3 h-3 text-accent" />
+            <span className="text-xs font-bold text-accent">+{todayEarned}</span>
           </div>
-        </div>
-
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] text-muted">Nivel {level + 1}</span>
-          <span className="text-[10px] text-muted tabular-nums">{xp.toLocaleString()} / {xpNeeded.toLocaleString()} XP</span>
-        </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-accent rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${(xp / xpNeeded) * 100}%` }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          />
         </div>
 
         <AnimatePresence>
           {earnedToast && (
             <motion.span
-              className="absolute top-3 right-5 text-lg font-bold text-accent"
+              className="absolute top-1 right-4 text-sm font-bold text-accent"
               initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 0, y: -16 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
             >
@@ -133,35 +117,17 @@ export default function Dashboard() {
         </AnimatePresence>
       </motion.div>
 
-      {/* Motivational */}
-      <motion.div
-        className="bg-accent/[0.05] border border-accent/10 rounded-xl px-4 py-2.5 mb-5 text-center"
+      {/* Motivational nudge */}
+      <motion.p
+        className="text-[11px] text-accent font-medium text-center mb-5"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <p className="text-xs text-accent font-medium">{motivMsg}</p>
-      </motion.div>
+        {motivMsg}
+      </motion.p>
 
-      {/* Streak Heatmap */}
-      <div className="bg-white rounded-2xl p-4 border border-border shadow-sm mb-5">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest">Tu racha</p>
-          <span className="text-[10px] text-accent font-bold">84 días activo</span>
-        </div>
-        <StreakHeatmap weeks={12} size="md" />
-      </div>
-
-      {/* Weekly Bar Chart */}
-      <div className="bg-white rounded-2xl p-4 border border-border shadow-sm mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest">Esta semana</p>
-          <span className="text-[10px] text-muted">+320 pts</span>
-        </div>
-        <WeeklyBars data={[65, 80, 45, 90, todayEarned, 0, 0]} />
-      </div>
-
-      {/* Today's habits */}
+      {/* TODAY'S HABITS — The primary action */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-semibold text-muted uppercase tracking-widest">Hoy</h2>
