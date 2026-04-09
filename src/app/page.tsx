@@ -255,7 +255,7 @@ function Hero() {
                 transition={{ delay: 1.05 }}
               >
                 <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Actividad</p>
-                <StreakHeatmap weeks={8} size="sm" data={PHONE_HEATMAP} animated={false} />
+                <StreakHeatmap weeks={8} size="sm" data={PHONE_HEATMAP} animated={false} fullWidth />
               </motion.div>
 
               {/* Today habits */}
