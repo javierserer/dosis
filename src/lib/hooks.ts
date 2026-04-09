@@ -14,9 +14,9 @@ export interface Profile {
   streak: number
   best_streak: number
   onboarding_done: boolean
-  notify_squad: boolean
   notify_reminders: boolean
   public_profile: boolean
+  is_private: boolean
   invitations_total: number
   invitations_used: number
   created_at: string

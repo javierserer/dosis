@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Logo, SPRING } from '@/components/shared'
-import { Camera, ArrowRight, Check, Users, Plus, Loader2 } from 'lucide-react'
+import { Camera, ArrowRight, Check, Plus, Loader2 } from 'lucide-react'
 
 const POPULAR_HABITS = [
   { name: 'Gym 1h', difficulty: 'hard' as const, pts: 50 },
@@ -22,10 +22,6 @@ const POPULAR_HABITS = [
   { name: 'Cocinar en casa', difficulty: 'normal' as const, pts: 30 },
 ]
 
-const DIFF_LABELS: Record<string, string> = {
-  easy: 'Fácil', normal: 'Normal', hard: 'Difícil', beast: 'Bestia',
-}
-
 export default function OnboardingPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -33,6 +29,7 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   // Step 1
   const [displayName, setDisplayName] = useState('')
@@ -43,12 +40,6 @@ export default function OnboardingPage() {
   // Step 2
   const [selectedHabits, setSelectedHabits] = useState<Set<string>>(new Set())
   const [customHabit, setCustomHabit] = useState('')
-
-  // Step 3
-  const [squadOption, setSquadOption] = useState<'create' | 'join' | null>(null)
-  const [squadName, setSquadName] = useState('')
-  const [squadCode, setSquadCode] = useState('')
-  const [error, setError] = useState('')
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -139,7 +130,7 @@ export default function OnboardingPage() {
     setStep(2)
   }
 
-  const handleStep2 = async () => {
+  const handleFinish = async () => {
     if (selectedHabits.size === 0) { setError('Elige al menos un hábito'); return }
     setError('')
     setLoading(true)
@@ -166,62 +157,6 @@ export default function OnboardingPage() {
       return
     }
 
-    setLoading(false)
-    setStep(3)
-  }
-
-  const handleFinish = async () => {
-    setError('')
-    setLoading(true)
-
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setLoading(false); return }
-
-    if (squadOption === 'create' && squadName.trim()) {
-      const squadId = crypto.randomUUID()
-      const { error: squadErr } = await supabase
-        .from('squads')
-        .insert({ id: squadId, name: squadName.trim(), created_by: user.id })
-
-      if (squadErr) {
-        setError('Error creando squad: ' + squadErr.message)
-        setLoading(false)
-        return
-      }
-
-      const { error: memberErr } = await supabase
-        .from('squad_members')
-        .insert({ squad_id: squadId, user_id: user.id, role: 'owner' })
-
-      if (memberErr) {
-        setError('Error uniéndote al squad: ' + memberErr.message)
-        setLoading(false)
-        return
-      }
-    } else if (squadOption === 'join' && squadCode.trim()) {
-      const { data: squad, error: findErr } = await supabase
-        .from('squads')
-        .select('id')
-        .eq('invite_code', squadCode.trim().toUpperCase())
-        .single()
-
-      if (findErr || !squad) {
-        setError('Código de squad no encontrado')
-        setLoading(false)
-        return
-      }
-
-      const { error: joinErr } = await supabase
-        .from('squad_members')
-        .insert({ squad_id: squad.id, user_id: user.id })
-
-      if (joinErr) {
-        setError('Error uniéndote al squad: ' + joinErr.message)
-        setLoading(false)
-        return
-      }
-    }
-
     const { error: doneErr } = await supabase
       .from('profiles')
       .update({ onboarding_done: true })
@@ -244,12 +179,12 @@ export default function OnboardingPage() {
       </div>
 
       <div className="flex items-center gap-2 mb-8">
-        {[1, 2, 3].map(s => (
+        {[1, 2].map(s => (
           <div key={s} className="flex items-center gap-2">
             <div className={`w-2.5 h-2.5 rounded-full transition-colors ${
               step === s ? 'bg-accent' : step > s ? 'bg-success' : 'bg-gray-200'
             }`} />
-            {s < 3 && <div className={`w-8 h-px ${step > s ? 'bg-success' : 'bg-gray-200'}`} />}
+            {s < 2 && <div className={`w-8 h-px ${step > s ? 'bg-success' : 'bg-gray-200'}`} />}
           </div>
         ))}
       </div>
@@ -267,7 +202,7 @@ export default function OnboardingPage() {
             >
               <div className="text-center">
                 <h2 className="text-xl font-bold">Tu perfil</h2>
-                <p className="text-sm text-muted mt-1">Para que tu squad te reconozca</p>
+                <p className="text-sm text-muted mt-1">Para que tus amigos te reconozcan</p>
               </div>
 
               <div className="flex justify-center">
@@ -392,100 +327,13 @@ export default function OnboardingPage() {
               {error && <p className="text-xs text-red-500 text-center">{error}</p>}
 
               <motion.button
-                onClick={handleStep2}
+                onClick={handleFinish}
                 disabled={loading || selectedHabits.size === 0}
                 className="w-full py-3.5 rounded-xl bg-accent text-white font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-30"
                 whileTap={{ scale: 0.97 }}
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Siguiente <ArrowRight className="w-4 h-4" /></>}
-              </motion.button>
-            </motion.div>
-          )}
-
-          {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={SPRING}
-              className="space-y-5"
-            >
-              <div className="text-center">
-                <h2 className="text-xl font-bold">Tu squad</h2>
-                <p className="text-sm text-muted mt-1">Compite con amigos — puedes hacerlo después</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <motion.button
-                  onClick={() => { setSquadOption('create'); setError('') }}
-                  className={`p-4 rounded-xl border text-left transition ${
-                    squadOption === 'create' ? 'border-accent/30 bg-accent/5' : 'border-border hover:border-gray-300'
-                  }`}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <Users className="w-5 h-5 text-accent mb-2" />
-                  <p className="text-sm font-semibold">Crear squad</p>
-                  <p className="text-[10px] text-muted mt-0.5">Nuevo equipo</p>
-                </motion.button>
-
-                <motion.button
-                  onClick={() => { setSquadOption('join'); setError('') }}
-                  className={`p-4 rounded-xl border text-left transition ${
-                    squadOption === 'join' ? 'border-accent/30 bg-accent/5' : 'border-border hover:border-gray-300'
-                  }`}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <ArrowRight className="w-5 h-5 text-accent mb-2" />
-                  <p className="text-sm font-semibold">Unirme</p>
-                  <p className="text-[10px] text-muted mt-0.5">Tengo un código</p>
-                </motion.button>
-              </div>
-
-              <AnimatePresence mode="wait">
-                {squadOption === 'create' && (
-                  <motion.div key="create" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-                    <input
-                      type="text"
-                      value={squadName}
-                      onChange={e => setSquadName(e.target.value)}
-                      placeholder="Nombre del squad (ej: Los Invencibles)"
-                      className="w-full px-4 py-3.5 bg-surface border border-border rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:border-accent/40 transition"
-                      autoFocus
-                    />
-                  </motion.div>
-                )}
-                {squadOption === 'join' && (
-                  <motion.div key="join" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-                    <input
-                      type="text"
-                      value={squadCode}
-                      onChange={e => setSquadCode(e.target.value)}
-                      placeholder="Código del squad"
-                      className="w-full px-4 py-3.5 bg-surface border border-border rounded-xl text-center font-mono tracking-widest text-sm placeholder-gray-400 focus:outline-none focus:border-accent/40 transition uppercase"
-                      autoFocus
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {error && <p className="text-xs text-red-500 text-center">{error}</p>}
-
-              <motion.button
-                onClick={handleFinish}
-                disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-accent text-white font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-50"
-                whileTap={{ scale: 0.97 }}
-              >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Empezar'}
               </motion.button>
-
-              <button
-                onClick={handleFinish}
-                className="w-full text-center text-xs text-muted hover:text-foreground transition"
-              >
-                Saltar por ahora
-              </button>
             </motion.div>
           )}
         </AnimatePresence>

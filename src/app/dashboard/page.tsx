@@ -52,8 +52,7 @@ export default function Dashboard() {
       supabase
         .from('activity')
         .select('id, user_id, type, payload, created_at, profiles!activity_user_id_fkey(display_name, avatar_url)')
-        .in('squad_id', (await supabase.from('squad_members').select('squad_id').eq('user_id', user.id)).data?.map(s => s.squad_id) || [])
-        .neq('user_id', user.id)
+        .in('user_id', (await supabase.from('follows').select('following_id').eq('follower_id', user.id)).data?.map(f => f.following_id) || [])
         .order('created_at', { ascending: false })
         .limit(10),
     ])
@@ -69,10 +68,10 @@ export default function Dashboard() {
     }
 
     if (feedRes.data) {
-      const feedWithKudos = await Promise.all(
+      const feedWithReactions = await Promise.all(
         feedRes.data.map(async (item) => {
           const { count } = await supabase
-            .from('kudos')
+            .from('reactions')
             .select('*', { count: 'exact', head: true })
             .eq('activity_id', item.id)
           return {
@@ -82,7 +81,7 @@ export default function Dashboard() {
           }
         })
       )
-      setFeed(feedWithKudos)
+      setFeed(feedWithReactions)
     }
 
     // Weekly points
@@ -204,7 +203,7 @@ export default function Dashboard() {
     if (!user) return
 
     setKudosGiven(prev => new Set(prev).add(activityId))
-    await supabase.from('kudos').insert({ from_user: user.id, to_user: feed.find(f => f.id === activityId)!.user_id, activity_id: activityId })
+    await supabase.from('reactions').insert({ activity_id: activityId, user_id: user.id })
     setFeed(prev => prev.map(f => f.id === activityId ? { ...f, kudos_count: f.kudos_count + 1 } : f))
   }
 
@@ -317,7 +316,7 @@ export default function Dashboard() {
               key={h.id}
               onClick={() => toggleHabit(h)}
               className={`w-full flex items-center justify-between rounded-xl px-4 py-3.5 text-left transition border shadow-sm ${
-                h.done ? 'bg-success-bg border-success/20' : 'bg-white border-border hover:border-accent/20'
+                h.done ? 'bg-accent-bg border-accent/20' : 'bg-white border-border hover:border-accent/20'
               }`}
               whileTap={{ scale: 0.96 }}
               layout
@@ -325,7 +324,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-3">
                 <motion.div
                   className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-                    h.done ? 'bg-success text-white' : 'border-2 border-gray-300'
+                    h.done ? 'bg-accent text-white' : 'border-2 border-gray-300'
                   }`}
                   animate={justCompleted === h.id ? { scale: [1, 1.4, 1], rotate: [0, 10, -10, 0] } : h.done ? { scale: 1 } : { scale: 1 }}
                   transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -348,7 +347,7 @@ export default function Dashboard() {
                     +{h.pts}
                   </motion.span>
                 ) : (
-                  <span className={`text-xs font-bold ${h.done ? 'text-success' : 'text-muted'}`}>+{h.pts}</span>
+                  <span className={`text-xs font-bold ${h.done ? 'text-accent' : 'text-muted'}`}>+{h.pts}</span>
                 )}
               </AnimatePresence>
             </motion.button>
@@ -378,12 +377,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Squad feed */}
+      {/* Friends feed */}
       {feed.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xs font-semibold text-muted uppercase tracking-widest">Tu squad</h2>
-            <a href="/dashboard/squad" className="text-[10px] text-accent font-semibold flex items-center gap-0.5">
+            <h2 className="text-xs font-semibold text-muted uppercase tracking-widest">Amigos</h2>
+            <a href="/dashboard/amigos" className="text-[10px] text-accent font-semibold flex items-center gap-0.5">
               Ver todo <ChevronRight className="w-3 h-3" />
             </a>
           </div>
@@ -413,7 +412,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-success" />
+                      <Check className="w-3.5 h-3.5 text-accent" />
                       <span className="text-sm font-medium">{actionText}</span>
                       {pts > 0 && <span className="text-xs text-accent font-bold">+{pts}</span>}
                     </div>

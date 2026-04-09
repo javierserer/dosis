@@ -9,7 +9,7 @@ import { registerServiceWorker } from '@/lib/sw'
 const tabs = [
   { href: '/dashboard', label: 'Feed', icon: Home },
   { href: '/dashboard/habits', label: 'Hábitos', icon: Target },
-  { href: '/dashboard/squad', label: 'Squad', icon: Users },
+  { href: '/dashboard/amigos', label: 'Amigos', icon: Users },
   { href: '/dashboard/recap', label: 'Progreso', icon: BarChart3 },
   { href: '/dashboard/profile', label: 'Perfil', icon: User },
 ]

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Logo } from '@/components/shared'
-import { Flame, Trophy, Copy, Check, LogOut, Camera, Loader2, Users, Plus } from 'lucide-react'
+import { Flame, Copy, Check, LogOut, Camera, Loader2, Users } from 'lucide-react'
 import { StreakHeatmap } from '@/components/charts'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -16,7 +16,7 @@ interface Stats {
   habitsCompleted: number
   perfectDays: number
   bestStreak: number
-  kudosReceived: number
+  reactionsReceived: number
 }
 
 interface Invitation {
@@ -38,28 +38,28 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
 
-  // Squad creation state
-  const [showCreateSquad, setShowCreateSquad] = useState(false)
-  const [newSquadName, setNewSquadName] = useState('')
-  const [squadJoinCode, setSquadJoinCode] = useState('')
-  const [hasSquad, setHasSquad] = useState(false)
-  const [squadSaving, setSquadSaving] = useState(false)
+  const [followingCount, setFollowingCount] = useState(0)
+  const [followersCount, setFollowersCount] = useState(0)
 
   const fetchData = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
-    const [profileRes, ptsRes, habitsCompletedRes, kudosRes, invitationsRes, membershipRes] = await Promise.all([
+    const [profileRes, ptsRes, habitsCompletedRes, reactionsRes, invitationsRes, followingRes, followersRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', user.id).single(),
       supabase.from('habit_logs').select('pts_earned').eq('user_id', user.id).eq('completed', true),
       supabase.from('habit_logs').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('completed', true),
-      supabase.from('kudos').select('id', { count: 'exact', head: true }).eq('to_user', user.id),
+      supabase.from('reactions').select('id', { count: 'exact', head: true }).in('activity_id',
+        (await supabase.from('activity').select('id').eq('user_id', user.id)).data?.map(a => a.id) || []
+      ),
       supabase.from('invitations').select('id, code, used_by').eq('owner_id', user.id),
-      supabase.from('squad_members').select('squad_id').eq('user_id', user.id).limit(1),
+      supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', user.id),
+      supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', user.id),
     ])
 
     setProfile(profileRes.data)
-    setHasSquad((membershipRes.data?.length ?? 0) > 0)
+    setFollowingCount(followingRes.count || 0)
+    setFollowersCount(followersRes.count || 0)
 
     const totalPts = ptsRes.data?.reduce((s, l) => s + l.pts_earned, 0) || 0
     setStats({
@@ -67,7 +67,7 @@ export default function ProfilePage() {
       habitsCompleted: habitsCompletedRes.count || 0,
       perfectDays: 0,
       bestStreak: profileRes.data?.best_streak || 0,
-      kudosReceived: kudosRes.count || 0,
+      reactionsReceived: reactionsRes.count || 0,
     })
 
     setInvitations(invitationsRes.data?.map(i => ({
@@ -76,7 +76,6 @@ export default function ProfilePage() {
       used: i.used_by !== null,
     })) || [])
 
-    // Build heatmap data (last 14 weeks = 98 days, including today)
     const localDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - 97)
@@ -137,7 +136,7 @@ export default function ProfilePage() {
     setTimeout(() => setCopied(null), 2000)
   }
 
-  const toggleSetting = async (field: 'notify_squad' | 'notify_reminders' | 'public_profile') => {
+  const toggleSetting = async (field: 'notify_reminders' | 'public_profile') => {
     if (!profile) return
     const newValue = !profile[field]
     setProfile({ ...profile, [field]: newValue })
@@ -148,47 +147,6 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/')
-  }
-
-  const createSquad = async () => {
-    if (!newSquadName.trim()) return
-    setSquadSaving(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setSquadSaving(false); return }
-
-    const { data: squad } = await supabase
-      .from('squads')
-      .insert({ name: newSquadName.trim(), created_by: user.id })
-      .select('id')
-      .single()
-
-    if (squad) {
-      await supabase.from('squad_members').insert({ squad_id: squad.id, user_id: user.id, role: 'owner' })
-      setHasSquad(true)
-    }
-    setSquadSaving(false)
-    setShowCreateSquad(false)
-    setNewSquadName('')
-  }
-
-  const joinSquad = async () => {
-    if (!squadJoinCode.trim()) return
-    setSquadSaving(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setSquadSaving(false); return }
-
-    const { data: squad } = await supabase
-      .from('squads')
-      .select('id')
-      .eq('invite_code', squadJoinCode.trim().toUpperCase())
-      .single()
-
-    if (squad) {
-      await supabase.from('squad_members').insert({ squad_id: squad.id, user_id: user.id })
-      setHasSquad(true)
-    }
-    setSquadSaving(false)
-    setSquadJoinCode('')
   }
 
   const xpForLevel = (lvl: number) => Math.floor(500 * Math.pow(1.15, lvl - 1))
@@ -211,7 +169,7 @@ export default function ProfilePage() {
     { label: 'Hábitos completados', value: (stats?.habitsCompleted || 0).toLocaleString('es-ES') },
     { label: 'Días perfectos', value: String(stats?.perfectDays || 0) },
     { label: 'Mejor racha', value: `${stats?.bestStreak || 0}d` },
-    { label: 'Kudos recibidos', value: String(stats?.kudosReceived || 0) },
+    { label: 'Ánimos recibidos', value: String(stats?.reactionsReceived || 0) },
   ]
 
   return (
@@ -245,6 +203,24 @@ export default function ProfilePage() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Follow counts */}
+      <div className="flex gap-3 mb-6">
+        <a href="/dashboard/amigos" className="flex-1 bg-white border border-border rounded-xl p-3 text-center shadow-sm hover:border-accent/20 transition">
+          <div className="flex items-center justify-center gap-1.5 mb-1">
+            <Users className="w-3.5 h-3.5 text-accent" />
+            <p className="text-lg font-extrabold">{followingCount}</p>
+          </div>
+          <p className="text-[9px] text-muted">Siguiendo</p>
+        </a>
+        <a href="/dashboard/amigos" className="flex-1 bg-white border border-border rounded-xl p-3 text-center shadow-sm hover:border-accent/20 transition">
+          <div className="flex items-center justify-center gap-1.5 mb-1">
+            <Users className="w-3.5 h-3.5 text-accent" />
+            <p className="text-lg font-extrabold">{followersCount}</p>
+          </div>
+          <p className="text-[9px] text-muted">Seguidores</p>
+        </a>
       </div>
 
       <motion.div
@@ -292,73 +268,6 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {!hasSquad && (
-        <>
-          <h2 className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Squad</h2>
-          <div className="bg-white border border-border rounded-2xl p-5 mb-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <Users className="w-5 h-5 text-accent" />
-              <div>
-                <p className="text-sm font-bold">Aún no tienes squad</p>
-                <p className="text-xs text-muted">Crea uno o únete con un código</p>
-              </div>
-            </div>
-            {showCreateSquad ? (
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={newSquadName}
-                  onChange={e => setNewSquadName(e.target.value)}
-                  placeholder="Nombre del squad"
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:border-accent/40 transition"
-                  autoFocus
-                />
-                <div className="flex gap-2">
-                  <motion.button
-                    onClick={createSquad}
-                    disabled={squadSaving || !newSquadName.trim()}
-                    className="flex-1 py-2.5 rounded-xl bg-accent text-white text-xs font-bold disabled:opacity-30 flex items-center justify-center gap-1"
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    {squadSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Crear'}
-                  </motion.button>
-                  <button onClick={() => setShowCreateSquad(false)} className="flex-1 py-2.5 rounded-xl border border-border text-xs text-muted">
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <motion.button
-                  onClick={() => setShowCreateSquad(true)}
-                  className="w-full py-2.5 rounded-xl bg-accent text-white text-xs font-bold flex items-center justify-center gap-1"
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <Plus className="w-3 h-3" /> Crear squad
-                </motion.button>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={squadJoinCode}
-                    onChange={e => setSquadJoinCode(e.target.value)}
-                    placeholder="Código de squad"
-                    className="flex-1 px-3 py-2.5 bg-surface border border-border rounded-xl text-xs font-mono uppercase placeholder-gray-400 focus:outline-none focus:border-accent/40 transition"
-                  />
-                  <motion.button
-                    onClick={joinSquad}
-                    disabled={squadSaving || !squadJoinCode.trim()}
-                    className="px-4 py-2.5 rounded-xl border border-accent/20 text-xs text-accent font-bold disabled:opacity-30"
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    {squadSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Unirme'}
-                  </motion.button>
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
       {invitations.length > 0 && (
         <>
           <h2 className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Tus invitaciones</h2>
@@ -400,7 +309,6 @@ export default function ProfilePage() {
       <h2 className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Ajustes</h2>
       <div className="bg-white border border-border rounded-xl divide-y divide-border mb-6 shadow-sm">
         {[
-          { field: 'notify_squad' as const, label: 'Notificaciones de squad', desc: 'Recibe kudos y actividad' },
           { field: 'notify_reminders' as const, label: 'Recordatorios diarios', desc: 'A las 9:00 y 21:00' },
           { field: 'public_profile' as const, label: 'Perfil público', desc: 'Visible en rankings globales' },
         ].map(setting => (
@@ -429,7 +337,7 @@ export default function ProfilePage() {
 
       <div className="text-center pb-4">
         <Logo size="sm" />
-        <p className="text-[10px] text-muted mt-1">v0.2.0</p>
+        <p className="text-[10px] text-muted mt-1">v0.3.0</p>
       </div>
     </div>
   )

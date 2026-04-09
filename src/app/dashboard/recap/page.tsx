@@ -14,7 +14,6 @@ interface WeekData {
   previousBalance: number
   streak: number
   habits: { name: string; done: number; total: number }[]
-  squadPosition: number
   dailyPts: number[]
 }
 
@@ -100,7 +99,6 @@ export default function RecapPage() {
       previousBalance,
       streak: profile?.streak || 0,
       habits,
-      squadPosition: 0,
       dailyPts,
     })
 

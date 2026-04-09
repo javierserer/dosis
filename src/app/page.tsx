@@ -6,7 +6,7 @@ import { FadeIn, Logo, SPRING } from '@/components/shared'
 import { StreakHeatmap, WeeklyBars, ComparisonBars } from '@/components/charts'
 import {
   Flame, Heart, BarChart3, Trophy,
-  Check, ArrowRight, Zap, Swords, Calendar, TrendingUp,
+  Check, ArrowRight, Zap, Calendar, TrendingUp,
 } from 'lucide-react'
 
 /* ================================================================
@@ -72,8 +72,8 @@ function Navbar() {
           <a href="#como-funciona" className="hidden sm:block text-sm text-muted hover:text-foreground transition">
             Cómo funciona
           </a>
-          <a href="#equipos" className="hidden sm:block text-sm text-muted hover:text-foreground transition">
-            Equipos
+          <a href="#amigos" className="hidden sm:block text-sm text-muted hover:text-foreground transition">
+            Amigos
           </a>
           <a
             href="/access"
@@ -117,9 +117,9 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.2 }}
           >
-            Sube de
+            Tus hábitos,
             <br />
-            <span className="text-accent">nivel.</span>
+            <span className="text-accent">tu nivel.</span>
           </motion.h1>
 
           <motion.p
@@ -128,10 +128,10 @@ function Hero() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ ...SPRING, delay: 0.35 }}
           >
-            Registra hábitos. Gana puntos. Compite con tu grupo.
+            Marca tus hábitos cada día. Gana puntos.
             <br className="hidden sm:block" />{' '}
             <span className="text-foreground font-medium">
-              Marca lo que haces cada día, sube de nivel y reta a tus amigos.
+              Compite con tus amigos y no rompas la racha.
             </span>
           </motion.p>
 
@@ -190,8 +190,8 @@ function Hero() {
           transition={{ ...SPRING, delay: 0.3 }}
         >
           <PhoneFrame>
-            <div className="pt-10 px-4 pb-4 h-full flex flex-col">
-              <div className="flex items-center justify-between mb-3">
+            <div className="pt-10 px-3.5 pb-3 h-full flex flex-col">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-extrabold tracking-tight text-gray-900">
                   <span className="text-accent">N</span>IVEL
                 </span>
@@ -202,7 +202,7 @@ function Hero() {
 
               {/* Level card */}
               <motion.div
-                className="bg-gray-50 rounded-xl p-3 mb-3"
+                className="bg-gray-50 rounded-xl p-2.5 mb-2"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.6 }}
@@ -223,19 +223,19 @@ function Hero() {
 
               {/* Mini weekly bars */}
               <motion.div
-                className="mb-2"
+                className="mb-1.5"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.9 }}
               >
                 <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Esta semana</p>
-                <div className="flex items-end gap-1 h-8">
+                <div className="flex items-end gap-1 h-6">
                   {[65, 80, 45, 90, 95, 30, 0].map((v, i) => (
                     <motion.div
                       key={i}
                       className={`flex-1 rounded-sm ${v === 0 ? 'bg-gray-100' : i === 4 ? 'bg-accent' : 'bg-accent/40'}`}
                       initial={{ height: 2 }}
-                      animate={inView ? { height: Math.max((v / 100) * 32, 2) } : {}}
+                      animate={inView ? { height: Math.max((v / 100) * 24, 2) } : {}}
                       transition={{ delay: 1.0 + i * 0.05, duration: 0.4 }}
                     />
                   ))}
@@ -249,7 +249,7 @@ function Hero() {
 
               {/* Mini heatmap */}
               <motion.div
-                className="mb-2"
+                className="mb-1.5"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 1.05 }}
@@ -258,25 +258,33 @@ function Hero() {
                 <StreakHeatmap weeks={8} size="sm" data={PHONE_HEATMAP} animated={false} />
               </motion.div>
 
-              {/* Today habits (3) */}
+              {/* Today habits */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
                 transition={{ delay: 1.15 }}
+                className="flex-1 min-h-0"
               >
-                <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1">Hoy</p>
-                <div className="space-y-1.5">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider">Hoy</p>
+                  <p className="text-[8px] text-gray-400">5/7</p>
+                </div>
+                <div className="space-y-1">
                   {[
                     { name: 'Gym 1h', done: true, pts: 50 },
                     { name: 'Leer 30min', done: true, pts: 30 },
-                    { name: 'Meditar 10min', done: false, pts: 15 },
+                    { name: 'Meditar 10min', done: true, pts: 15 },
+                    { name: 'Sin alcohol', done: true, pts: 30 },
+                    { name: 'Madrugar', done: true, pts: 50 },
+                    { name: 'Cold shower', done: false, pts: 80 },
+                    { name: 'Journaling', done: false, pts: 30 },
                   ].map((h, i) => (
-                    <div key={i} className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ${h.done ? 'bg-green-50' : 'bg-gray-50'}`}>
-                      <div className={`w-3.5 h-3.5 rounded flex items-center justify-center ${h.done ? 'bg-green-500 text-white' : 'border border-gray-300'}`}>
-                        {h.done && <Check className="w-2 h-2" />}
+                    <div key={i} className={`flex items-center gap-2 rounded-lg px-2 py-1 ${h.done ? 'bg-accent/[0.06]' : 'bg-gray-50'}`}>
+                      <div className={`w-3 h-3 rounded flex items-center justify-center shrink-0 ${h.done ? 'bg-accent text-white' : 'border border-gray-300'}`}>
+                        {h.done && <Check className="w-2 h-2" strokeWidth={3} />}
                       </div>
-                      <span className={`text-[10px] flex-1 ${h.done ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{h.name}</span>
-                      <span className={`text-[9px] font-bold ${h.done ? 'text-green-500' : 'text-gray-400'}`}>+{h.pts}</span>
+                      <span className={`text-[9px] flex-1 truncate ${h.done ? 'text-gray-400 line-through' : 'text-gray-700'}`}>{h.name}</span>
+                      <span className={`text-[8px] font-bold ${h.done ? 'text-accent' : 'text-gray-400'}`}>+{h.pts}</span>
                     </div>
                   ))}
                 </div>
@@ -299,7 +307,7 @@ function Hero() {
                 <Heart className="w-3.5 h-3.5 text-accent fill-accent" />
                 <span className="text-[10px] text-accent font-semibold">12 ánimos</span>
               </div>
-              <p className="text-xs text-gray-700">Tu grupo celebra tu racha</p>
+              <p className="text-xs text-gray-700">Tus amigos celebran tu racha</p>
             </motion.div>
           </motion.div>
 
@@ -336,11 +344,13 @@ function ActivityTicker() {
     'Carlos completó Gym 1h · +50 pts',
     'María desbloqueó racha de 30 días',
     'David recibió 8 ánimos por su racha',
-    'Laura retó a Pablo · Running semanal',
+    'Laura completó Meditar 10min · +15 pts',
     'Ana subió al nivel 15',
-    'Los Disciplinados: mejor grupo esta semana',
+    'Pablo completó Leer 30min · +30 pts',
     'Javier completó todos sus hábitos hoy',
     'Sara lleva 21 días sin fallar',
+    'Mario completó Ayuno 16h · +80 pts',
+    'Elena subió al nivel 8',
   ]
 
   return (
@@ -381,6 +391,9 @@ function AppShowcase() {
     { name: 'Gym 1h', done: 5, total: 7 },
     { name: 'Leer 30min', done: 7, total: 7 },
     { name: 'Meditar 10min', done: 4, total: 7 },
+    { name: 'Sin alcohol', done: 7, total: 7 },
+    { name: 'Madrugar', done: 3, total: 7 },
+    { name: 'Estiramientos', done: 6, total: 7 },
   ]
 
   return (
@@ -389,7 +402,7 @@ function AppShowcase() {
         <FadeIn className="text-center mb-16">
           <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Por dentro</p>
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-            Así se ve tu progreso.
+            Esto es lo que ves cada día.
           </h2>
         </FadeIn>
 
@@ -443,10 +456,10 @@ function AppShowcase() {
             transition={{ ...SPRING, delay: 0.2 }}
           >
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
-              Cada día cuenta.
+              Tu constancia, visible.
             </h3>
             <p className="text-base text-muted leading-relaxed">
-              Tu mapa de actividad muestra cada día que cumples. Verde es progreso, blanco es descanso.
+              Cada cuadrado es un día. Naranja es progreso, blanco es descanso.
               <span className="text-foreground font-medium"> Cuanto más constante, más se nota.</span>
             </p>
           </motion.div>
@@ -520,11 +533,11 @@ function AppShowcase() {
             transition={{ ...SPRING, delay: 0.2 }}
           >
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
-              Tu semana, de un vistazo.
+              Sabes exactamente cómo vas.
             </h3>
             <p className="text-base text-muted leading-relaxed">
-              Resumen semanal con tus puntos, racha y progreso por hábito.
-              <span className="text-foreground font-medium"> Sabes exactamente cómo vas.</span>
+              Cada semana ves tus puntos, tu racha y tu progreso por hábito.
+              <span className="text-foreground font-medium"> Sin engañarte a ti mismo.</span>
             </p>
           </motion.div>
         </div>
@@ -534,31 +547,31 @@ function AppShowcase() {
 }
 
 /* ================================================================
-   TEAMS (formerly "Squads")
+   AMIGOS — Social follows section
    ================================================================ */
 
-function Teams() {
+function Amigos() {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
-  const members = [
-    { pos: 1, name: 'Carlos', pts: 1240, change: 0 },
-    { pos: 2, name: 'María', pts: 980, change: 1 },
-    { pos: 3, name: 'Tú', pts: 850, change: -1, isYou: true },
-    { pos: 4, name: 'David', pts: 320, change: 0, isLast: true },
+  const friends = [
+    { pos: 1, name: 'Carlos', pts: 1240 },
+    { pos: 2, name: 'María', pts: 980 },
+    { pos: 3, name: 'Tú', pts: 850, isYou: true },
+    { pos: 4, name: 'David', pts: 320 },
   ]
 
   return (
-    <section id="equipos" className="py-24 sm:py-32" ref={ref}>
+    <section id="amigos" className="py-24 sm:py-32" ref={ref}>
       <div className="max-w-6xl mx-auto px-5">
         <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
           <div className="flex-1 text-center lg:text-left">
             <FadeIn>
-              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Equipos</p>
+              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Amigos</p>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Tu grupo
+                Tus amigos
                 <br />
-                te mantiene
+                te mantienen
                 <br />
                 <span className="text-muted">arriba.</span>
               </h2>
@@ -566,16 +579,16 @@ function Teams() {
 
             <FadeIn delay={0.15}>
               <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
-                Crea un grupo con tus amigos. Compite cada semana. Daos ánimos.
-                <span className="text-foreground font-medium"> El último invita a las cañas.</span>
+                Sigue a quien quieras. Compite cada semana.
+                <span className="text-foreground font-medium"> Daos ánimos cuando toque.</span>
               </p>
             </FadeIn>
 
             <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
               {[
-                { icon: Trophy, text: 'Clasificación semanal', detail: 'Compite por ser el primero cada semana' },
-                { icon: Swords, text: 'Retos 1 contra 1', detail: 'Reta a quien quieras. El que pierda, paga.' },
-                { icon: BarChart3, text: 'Progreso compartido', detail: 'Ve cómo va todo tu grupo' },
+                { icon: Trophy, text: 'Ranking semanal', detail: 'Compite contra tus amigos cada semana' },
+                { icon: Heart, text: 'Ánimos', detail: 'Dale ánimos cuando completen un hábito' },
+                { icon: BarChart3, text: 'Actividad en directo', detail: 'Ve qué hacen tus amigos en tiempo real' },
               ].map((f, i) => (
                 <FadeIn key={i} delay={0.3 + i * 0.1}>
                   <div className="flex items-start gap-3 text-left">
@@ -602,11 +615,11 @@ function Teams() {
             >
               <div className="bg-white rounded-2xl border border-border shadow-lg p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-bold text-gray-900">Los Disciplinados</p>
+                  <p className="text-xs font-bold text-gray-900">Ranking semanal</p>
                   <span className="text-[10px] text-accent font-semibold">Semana 14</span>
                 </div>
                 <div className="space-y-2">
-                  {members.map((m, i) => (
+                  {friends.map((m, i) => (
                     <motion.div
                       key={i}
                       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
@@ -622,7 +635,6 @@ function Teams() {
                       </div>
                       <div className="flex-1">
                         <p className={`text-xs font-semibold ${m.isYou ? 'text-accent' : 'text-gray-900'}`}>{m.name}</p>
-                        {m.isLast && <p className="text-[9px] text-gray-400">Paga las cañas</p>}
                       </div>
                       <span className="text-xs font-bold text-gray-500 tabular-nums">{m.pts.toLocaleString()}</span>
                     </motion.div>
@@ -664,12 +676,12 @@ function InviteCTA() {
       <div className="max-w-3xl mx-auto px-5 text-center">
         <FadeIn>
           <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
-            ¿Listo para subir
+            ¿Tienes una
             <br />
-            <span className="text-accent">de nivel?</span>
+            <span className="text-accent">invitación?</span>
           </h2>
           <p className="mt-6 text-lg text-muted max-w-lg mx-auto leading-relaxed">
-            Solo se entra con invitación. Pídele un código a alguien que ya esté dentro.
+            Solo se entra con código. Pídele uno a alguien que ya esté dentro.
           </p>
         </FadeIn>
 
@@ -702,7 +714,7 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <Logo size="sm" />
-            <p className="text-xs text-muted mt-1">Sube de nivel.</p>
+            <p className="text-xs text-muted mt-1">Tus hábitos, tu nivel.</p>
           </div>
           <div className="flex items-center gap-4 text-xs text-muted">
             <a href="/legal/privacidad" className="hover:text-foreground transition">Privacidad</a>
@@ -729,7 +741,7 @@ export default function Home() {
       <Hero />
       <ActivityTicker />
       <AppShowcase />
-      <Teams />
+      <Amigos />
       <InviteCTA />
       <Footer />
     </main>

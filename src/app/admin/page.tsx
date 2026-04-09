@@ -9,14 +9,14 @@ export default async function AdminPage() {
     { count: totalUsers },
     { count: totalHabits },
     { count: totalLogs },
-    { count: totalSquads },
+    { count: totalFollows },
     { count: waitlistCount },
     { count: invitationsUsed },
   ] = await Promise.all([
     supabase.from('profiles').select('*', { count: 'exact', head: true }),
     supabase.from('habits').select('*', { count: 'exact', head: true }),
     supabase.from('habit_logs').select('*', { count: 'exact', head: true }),
-    supabase.from('squads').select('*', { count: 'exact', head: true }),
+    supabase.from('follows').select('*', { count: 'exact', head: true }),
     supabase.from('waitlist').select('*', { count: 'exact', head: true }),
     supabase.from('invitations').select('*', { count: 'exact', head: true }).not('used_by', 'is', null),
   ])
@@ -31,7 +31,7 @@ export default async function AdminPage() {
     { label: 'Usuarios', value: totalUsers || 0 },
     { label: 'Hábitos creados', value: totalHabits || 0 },
     { label: 'Logs totales', value: totalLogs || 0 },
-    { label: 'Squads', value: totalSquads || 0 },
+    { label: 'Conexiones', value: totalFollows || 0 },
     { label: 'Waitlist', value: waitlistCount || 0 },
     { label: 'Invitaciones usadas', value: invitationsUsed || 0 },
   ]

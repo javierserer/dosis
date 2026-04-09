@@ -24,7 +24,7 @@ export default function PrivacidadPage() {
           <ul>
             <li><strong>Datos de registro:</strong> email, nombre de usuario y nombre para mostrar.</li>
             <li><strong>Foto de perfil:</strong> si decides subirla voluntariamente.</li>
-            <li><strong>Datos de uso:</strong> hábitos creados, registros de cumplimiento, puntos, racha, nivel, actividad en squads.</li>
+            <li><strong>Datos de uso:</strong> hábitos creados, registros de cumplimiento, puntos, racha, nivel, actividad social.</li>
             <li><strong>Datos técnicos:</strong> dirección IP, tipo de navegador, dispositivo, sistema operativo, páginas visitadas.</li>
           </ul>
 
@@ -32,7 +32,7 @@ export default function PrivacidadPage() {
           <ul>
             <li>Proporcionar y mantener el servicio.</li>
             <li>Gestionar tu cuenta y autenticación.</li>
-            <li>Mostrar tu progreso, estadísticas y rankings dentro de tu squad.</li>
+            <li>Mostrar tu progreso, estadísticas y rankings con tus amigos.</li>
             <li>Enviar notificaciones push si las has activado.</li>
             <li>Mejorar la app mediante análisis de uso agregado.</li>
           </ul>

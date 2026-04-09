@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "NIVEL — Sube de nivel",
   description:
-    "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana. La app de hábitos que engancha.",
+    "Registra tus hábitos, compite con tus amigos, sube de nivel cada semana. La app de hábitos que engancha.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "NIVEL — Sube de nivel",
     description:
-      "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana.",
+      "Registra tus hábitos, compite con tus amigos, sube de nivel cada semana.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "NIVEL — Sube de nivel",
     description:
-      "Trackea tus hábitos, compite con tu squad, sube de nivel cada semana.",
+      "Registra tus hábitos, compite con tus amigos, sube de nivel cada semana.",
   },
   icons: {
     icon: "/favicon.svg",

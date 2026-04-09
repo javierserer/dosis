@@ -21,7 +21,7 @@ export default function TerminosPage() {
           <p>Al crear una cuenta en NIVEL, aceptas estos términos y condiciones. Si no estás de acuerdo, no utilices la aplicación.</p>
 
           <h2>2. Descripción del servicio</h2>
-          <p>NIVEL es una aplicación de seguimiento de hábitos que permite a los usuarios registrar hábitos diarios, ganar puntos, subir de nivel y competir con amigos en squads. El servicio se ofrece &quot;tal cual&quot; y puede cambiar o actualizarse en cualquier momento.</p>
+          <p>NIVEL es una aplicación de seguimiento de hábitos que permite a los usuarios registrar hábitos diarios, ganar puntos, subir de nivel y competir con amigos. El servicio se ofrece &quot;tal cual&quot; y puede cambiar o actualizarse en cualquier momento.</p>
 
           <h2>3. Registro y cuenta</h2>
           <ul>
@@ -45,7 +45,7 @@ export default function TerminosPage() {
           <p>NIVEL, su diseño, código, marca, logos y contenido son propiedad de NIVEL. No puedes copiar, modificar, distribuir ni crear trabajos derivados sin nuestro permiso.</p>
 
           <h2>6. Contenido del usuario</h2>
-          <p>Eres propietario de los datos que introduces (nombres de hábitos, foto de perfil). Nos otorgas licencia para mostrar ese contenido dentro del servicio (por ejemplo, tu nombre y avatar en el ranking de tu squad).</p>
+          <p>Eres propietario de los datos que introduces (nombres de hábitos, foto de perfil). Nos otorgas licencia para mostrar ese contenido dentro del servicio (por ejemplo, tu nombre y avatar en el ranking de tus amigos).</p>
 
           <h2>7. Disponibilidad</h2>
           <p>No garantizamos que el servicio esté disponible de forma ininterrumpida. Podemos realizar mantenimientos, actualizaciones o interrupciones temporales sin previo aviso.</p>
