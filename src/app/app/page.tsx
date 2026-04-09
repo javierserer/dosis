@@ -10,8 +10,6 @@ const INITIAL_HABITS = [
   { id: 2, name: 'Leer 30min', pts: 30, done: true },
   { id: 3, name: 'Sin alcohol', pts: 30, done: true },
   { id: 4, name: 'Meditar 10min', pts: 15, done: false },
-  { id: 5, name: 'Madrugar', pts: 50, done: true },
-  { id: 6, name: 'Mascarilla pelo', pts: 15, done: false },
 ]
 
 const FEED = [
@@ -52,9 +50,11 @@ export default function Dashboard() {
   const completedCount = habits.filter((h) => h.done).length
   const remaining = habits.length - completedCount
 
-  const motivMsg = remaining > 0
-    ? `Te quedan ${remaining} para el día perfecto`
-    : '¡Día perfecto! Todos completados'
+  const motivMsg = remaining === 0
+    ? '¡Día perfecto! Todos completados'
+    : remaining <= 2
+      ? `María ya completó los suyos. Te quedan ${remaining}.`
+      : `Te quedan ${remaining} para el día perfecto`
 
   return (
     <div className="pt-14 px-5">

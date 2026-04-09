@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Flame, TrendingUp, Trophy, Zap, Calendar, Upload } from 'lucide-react'
-import { WeeklyBars, TrendLine, StreakHeatmap, WeeklyShareCard } from '@/components/charts'
+import { Flame, TrendingUp, Zap, Calendar } from 'lucide-react'
+import { WeeklyBars, StreakHeatmap } from '@/components/charts'
 
 const SPRING = { type: 'spring' as const, stiffness: 80, damping: 18 }
 
@@ -20,18 +20,15 @@ const THIS_WEEK = {
     { name: 'Mascarilla pelo', done: 1, total: 2 },
   ],
   squadPosition: 3,
-  squadName: 'Los Disciplinados',
   previousBalance: 380,
   dailyPts: [65, 80, 45, 90, 95, 30, 15],
 }
 
-const WEEKLY_TREND = [180, 320, 290, 450, 380, 420]
-
 const PERSONAL_BESTS = [
-  { label: 'Mejor semana', value: '450 pts', detail: 'Semana 11', icon: Zap },
-  { label: 'Mejor día', value: '135 pts', detail: '14 mar', icon: TrendingUp },
-  { label: 'Mejor racha', value: '32 días', detail: 'Gym', icon: Flame },
-  { label: 'Días perfectos', value: '8', detail: 'Todos completados', icon: Calendar },
+  { label: 'Mejor semana', value: '450 pts', icon: Zap },
+  { label: 'Mejor día', value: '135 pts', icon: TrendingUp },
+  { label: 'Mejor racha', value: '32 días', icon: Flame },
+  { label: 'Días perfectos', value: '8', icon: Calendar },
 ]
 
 const PAST_WEEKS = [
@@ -54,42 +51,12 @@ export default function RecapPage() {
         <span className="text-xs text-muted">Semana {THIS_WEEK.week}</span>
       </div>
 
-      {/* ============ WEEKLY CARD ============ */}
-      <motion.div
-        className="flex flex-col items-center mb-5"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={SPRING}
-      >
-        <div className="relative">
-          <WeeklyShareCard
-            week={THIS_WEEK.week}
-            level={THIS_WEEK.level}
-            streak={THIS_WEEK.streak}
-            pts={THIS_WEEK.balance}
-            pct={completionRate}
-            squadName={THIS_WEEK.squadName}
-            squadPos={THIS_WEEK.squadPosition}
-            dailyPts={THIS_WEEK.dailyPts}
-          />
-          <motion.button
-            className="absolute top-3 right-3 w-7 h-7 rounded-lg bg-gray-200/50 flex items-center justify-center text-muted hover:text-foreground hover:bg-gray-200 transition"
-            whileTap={{ scale: 0.9 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Upload className="w-3.5 h-3.5" />
-          </motion.button>
-        </div>
-      </motion.div>
-
       {/* KPIs */}
       <motion.div
         className="bg-white rounded-2xl p-5 border border-border shadow-sm mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.1 }}
+        transition={SPRING}
       >
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="text-center">
@@ -116,12 +83,12 @@ export default function RecapPage() {
         </div>
       </motion.div>
 
-      {/* Streak Heatmap + Weekly Bars — moved from dashboard */}
+      {/* Activity: Heatmap + Weekly Bars combined */}
       <motion.div
         className="bg-white rounded-2xl p-4 border border-border shadow-sm mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.15 }}
+        transition={{ ...SPRING, delay: 0.1 }}
       >
         <div className="flex items-center justify-between mb-3">
           <p className="text-[10px] font-semibold text-muted uppercase tracking-widest">Actividad</p>
@@ -131,30 +98,10 @@ export default function RecapPage() {
           </div>
         </div>
         <StreakHeatmap weeks={16} size="sm" />
-      </motion.div>
-
-      <motion.div
-        className="bg-white rounded-2xl p-5 border border-border shadow-sm mb-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.2 }}
-      >
-        <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-4">Puntos por día</p>
-        <WeeklyBars data={THIS_WEEK.dailyPts} maxHeight={90} />
-      </motion.div>
-
-      {/* Trend Line */}
-      <motion.div
-        className="bg-white rounded-2xl p-5 border border-border shadow-sm mb-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.25 }}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest">Tendencia semanal</p>
-          <span className="text-[10px] text-accent font-bold">+{Math.round(((WEEKLY_TREND[WEEKLY_TREND.length-1] - WEEKLY_TREND[0]) / WEEKLY_TREND[0]) * 100)}%</span>
+        <div className="mt-4 pt-3 border-t border-border">
+          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-3">Puntos por día</p>
+          <WeeklyBars data={THIS_WEEK.dailyPts} maxHeight={70} />
         </div>
-        <TrendLine data={WEEKLY_TREND} width={300} height={110} showDots showLabels />
       </motion.div>
 
       {/* Habits breakdown */}
@@ -162,7 +109,7 @@ export default function RecapPage() {
         className="bg-white rounded-2xl p-5 border border-border shadow-sm mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.3 }}
+        transition={{ ...SPRING, delay: 0.15 }}
       >
         <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-4">Hábitos</p>
         <div className="space-y-3">
@@ -173,7 +120,7 @@ export default function RecapPage() {
                 key={i}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ ...SPRING, delay: 0.35 + i * 0.06 }}
+                transition={{ ...SPRING, delay: 0.2 + i * 0.06 }}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-muted">{h.name}</span>
@@ -184,7 +131,7 @@ export default function RecapPage() {
                     className={`h-full rounded-full ${pct === 100 ? 'bg-accent' : 'bg-accent/40'}`}
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: 'easeOut' }}
+                    transition={{ duration: 0.6, delay: 0.25 + i * 0.08, ease: 'easeOut' }}
                   />
                 </div>
               </motion.div>
@@ -193,27 +140,26 @@ export default function RecapPage() {
         </div>
       </motion.div>
 
-      {/* Personal Bests */}
+      {/* Personal Bests — compact horizontal */}
       <motion.div
         className="mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ ...SPRING, delay: 0.35 }}
+        transition={{ ...SPRING, delay: 0.2 }}
       >
         <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-3">Personal bests</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {PERSONAL_BESTS.map((pb, i) => (
             <motion.div
               key={i}
-              className="bg-white border border-border rounded-xl p-4 shadow-sm"
+              className="shrink-0 bg-white border border-border rounded-xl px-3.5 py-3 shadow-sm min-w-[120px]"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.06 }}
+              transition={{ delay: 0.25 + i * 0.06 }}
             >
-              <pb.icon className="w-4 h-4 text-accent mb-2" />
-              <p className="text-lg font-extrabold">{pb.value}</p>
-              <p className="text-[10px] text-muted">{pb.label}</p>
-              <p className="text-[9px] text-accent font-medium mt-0.5">{pb.detail}</p>
+              <pb.icon className="w-3.5 h-3.5 text-accent mb-1.5" />
+              <p className="text-base font-extrabold leading-tight">{pb.value}</p>
+              <p className="text-[9px] text-muted mt-0.5">{pb.label}</p>
             </motion.div>
           ))}
         </div>
@@ -230,7 +176,7 @@ export default function RecapPage() {
               className="bg-white border border-border rounded-xl px-4 py-3 shadow-sm"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 + i * 0.06 }}
+              transition={{ delay: 0.3 + i * 0.06 }}
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-xs font-bold text-muted tabular-nums w-7">S{w.week}</span>
@@ -240,7 +186,7 @@ export default function RecapPage() {
                       className="h-full bg-accent/40 rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: `${(w.pts / maxPts) * 100}%` }}
-                      transition={{ duration: 0.5, delay: 0.5 + i * 0.08 }}
+                      transition={{ duration: 0.5, delay: 0.35 + i * 0.08 }}
                     />
                   </div>
                 </div>

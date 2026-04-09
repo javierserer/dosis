@@ -13,9 +13,9 @@ const STATS = [
   { label: 'Puntos totales', value: '12.480' },
   { label: 'Hábitos completados', value: '847' },
   { label: 'Días perfectos', value: '38' },
-  { label: 'Duelos ganados', value: '12' },
+  { label: 'Mejor posición squad', value: '#1' },
   { label: 'Mejor racha', value: '32d' },
-  { label: 'Semanas activo', value: '14' },
+  { label: 'Kudos recibidos', value: '47' },
 ]
 
 const ACHIEVEMENTS = [
@@ -127,7 +127,7 @@ export default function ProfilePage() {
 
       {/* Invitations */}
       <h2 className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Tus invitaciones</h2>
-      <div className="bg-white border border-accent/15 rounded-2xl p-5 mb-4 shadow-sm">
+      <div className="bg-white border border-accent/15 rounded-2xl p-5 mb-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-sm font-bold">Invitaciones disponibles</p>
@@ -135,7 +135,7 @@ export default function ProfilePage() {
           </div>
           <p className="text-2xl font-extrabold text-accent">3 <span className="text-sm text-muted font-normal">/ 5</span></p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-4">
           <div className="flex-1 bg-surface border border-border rounded-lg px-3 py-2.5 text-xs text-muted font-mono truncate">
             nivel.app/i/JAV-X8K2
           </div>
@@ -149,33 +149,32 @@ export default function ProfilePage() {
             {copied ? <><Check className="w-3 h-3" /> Copiado</> : <><Copy className="w-3 h-3" /> Copiar</>}
           </motion.button>
         </div>
-      </div>
 
-      {/* Earn more */}
-      <div className="bg-white border border-border rounded-2xl p-5 mb-6 shadow-sm">
-        <p className="text-sm font-bold mb-3">Gana más invitaciones</p>
-        <div className="space-y-2.5">
-          {[
-            { action: 'Racha de 30 días', reward: '+2', progress: 14, total: 30, done: false },
-            { action: 'Ganar 3 duelos', reward: '+1', progress: 2, total: 3, done: false },
-            { action: 'Squad en top 10%', reward: '+1', progress: 1, total: 1, done: true },
-          ].map((item, i) => (
-            <div key={i} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${item.done ? 'bg-success-bg' : 'bg-surface'}`}>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-medium">{item.action}</p>
-                  <span className={`text-[10px] font-bold ${item.done ? 'text-success' : 'text-accent'}`}>
-                    {item.done ? 'Conseguido' : item.reward}
-                  </span>
-                </div>
-                {!item.done && (
-                  <div className="h-1 bg-gray-100 rounded-full mt-1.5 overflow-hidden">
-                    <div className="h-full bg-accent/40 rounded-full" style={{ width: `${(item.progress / item.total) * 100}%` }} />
+        <div className="border-t border-border pt-3">
+          <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-2">Gana más</p>
+          <div className="space-y-2">
+            {[
+              { action: 'Racha de 30 días', reward: '+2', progress: 14, total: 30, done: false },
+              { action: 'Ganar 3 duelos', reward: '+1', progress: 2, total: 3, done: false },
+              { action: 'Squad en top 10%', reward: '+1', progress: 1, total: 1, done: true },
+            ].map((item, i) => (
+              <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${item.done ? 'bg-success-bg' : 'bg-surface'}`}>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-medium">{item.action}</p>
+                    <span className={`text-[10px] font-bold ${item.done ? 'text-success' : 'text-accent'}`}>
+                      {item.done ? 'Conseguido' : item.reward}
+                    </span>
                   </div>
-                )}
+                  {!item.done && (
+                    <div className="h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
+                      <div className="h-full bg-accent/40 rounded-full" style={{ width: `${(item.progress / item.total) * 100}%` }} />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

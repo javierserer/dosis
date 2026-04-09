@@ -206,12 +206,12 @@ export default function HabitsPage() {
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
           {[
-            { name: 'Cold shower', diff: 'Bestia', pts: 80, users: '1.2k' },
-            { name: 'Journaling', diff: 'Normal', pts: 30, users: '980' },
-            { name: 'No pantallas antes de dormir', diff: 'Normal', pts: 30, users: '870' },
-            { name: 'Caminar 10k pasos', diff: 'Difícil', pts: 50, users: '2.1k' },
-            { name: 'Ayuno 16h', diff: 'Bestia', pts: 80, users: '640' },
-            { name: 'Estiramientos', diff: 'Fácil', pts: 15, users: '1.5k' },
+            { name: 'Cold shower', diff: 'Bestia', pts: 80, users: '184' },
+            { name: 'Journaling', diff: 'Normal', pts: 30, users: '312' },
+            { name: 'No pantallas antes de dormir', diff: 'Normal', pts: 30, users: '267' },
+            { name: 'Caminar 10k pasos', diff: 'Difícil', pts: 50, users: '523' },
+            { name: 'Ayuno 16h', diff: 'Bestia', pts: 80, users: '98' },
+            { name: 'Estiramientos', diff: 'Fácil', pts: 15, users: '441' },
           ].map((p, i) => (
             <motion.button
               key={i}

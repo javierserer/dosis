@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { FadeIn, Logo, SPRING } from '@/components/shared'
-import { WeeklyShareCard } from '@/components/charts'
 import {
   Flame, Heart, Target, BarChart3, Trophy,
   Check, ArrowRight, Zap, Swords,
@@ -224,23 +223,12 @@ function Hero() {
                 </div>
               </motion.div>
 
-              {/* Mini heatmap */}
-              <motion.div
-                className="mb-3"
-                initial={{ opacity: 0 }}
-                animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 0.9 }}
-              >
-                <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Tu racha</p>
-                <MiniStreakGrid inView={inView} />
-              </motion.div>
-
               {/* Mini bars */}
               <motion.div
                 className="mb-3"
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.1 }}
+                transition={{ delay: 0.9 }}
               >
                 <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Esta semana</p>
                 <div className="flex items-end gap-1 h-10">
@@ -250,7 +238,7 @@ function Hero() {
                       className={`flex-1 rounded-sm ${v === 0 ? 'bg-gray-100' : i === 4 ? 'bg-accent' : 'bg-accent/40'}`}
                       initial={{ height: 2 }}
                       animate={inView ? { height: Math.max((v / 100) * 40, 2) } : {}}
-                      transition={{ delay: 1.2 + i * 0.05, duration: 0.4 }}
+                      transition={{ delay: 1.0 + i * 0.05, duration: 0.4 }}
                     />
                   ))}
                 </div>
@@ -265,7 +253,7 @@ function Hero() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.3 }}
+                transition={{ delay: 1.15 }}
               >
                 <p className="text-[8px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Hoy</p>
                 <div className="space-y-1.5">
@@ -405,62 +393,6 @@ function HowItWorks() {
               </motion.div>
             </FadeIn>
           ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ================================================================
-   WEEKLY RECAP — shows the weekly card as part of the experience
-   ================================================================ */
-
-function WeeklyRecap() {
-  return (
-    <section className="py-24 sm:py-32 bg-surface">
-      <div className="max-w-6xl mx-auto px-5">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-          <div className="flex-1 text-center lg:text-left">
-            <FadeIn>
-              <p className="text-sm text-accent font-semibold uppercase tracking-widest mb-3">Cada semana</p>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-                Tu resumen
-                <br />
-                <span className="text-muted">semanal.</span>
-              </h2>
-            </FadeIn>
-
-            <FadeIn delay={0.15}>
-              <p className="mt-6 text-lg text-muted leading-relaxed max-w-md mx-auto lg:mx-0">
-                Cada domingo, NIVEL genera tu card con nivel, racha, puntos y posición en el squad.
-                <span className="text-foreground font-medium"> Tu progreso de un vistazo.</span>
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <div className="mt-8 space-y-3 max-w-md mx-auto lg:mx-0">
-                {[
-                  { icon: BarChart3, text: 'Puntos por día', detail: 'Actividad de lunes a domingo en una gráfica.' },
-                  { icon: Flame, text: 'Racha y nivel', detail: 'Tu progreso acumulado semana a semana.' },
-                  { icon: Heart, text: 'Posición en el squad', detail: 'Dónde estás respecto a tu equipo.' },
-                ].map((f, i) => (
-                  <div key={i} className="flex items-start gap-3 text-left">
-                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <f.icon className="w-4 h-4 text-accent" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{f.text}</p>
-                      <p className="text-xs text-muted">{f.detail}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          <FadeIn delay={0.2} className="shrink-0">
-            <WeeklyShareCard animated compact={false} />
-          </FadeIn>
         </div>
       </div>
     </section>
@@ -654,7 +586,6 @@ export default function Home() {
       <Hero />
       <ActivityTicker />
       <HowItWorks />
-      <WeeklyRecap />
       <Squads />
       <InviteCTA />
       <Footer />
